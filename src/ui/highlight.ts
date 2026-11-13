@@ -59,24 +59,19 @@ export function highlightTerms(root: HTMLElement, terms: string[]): number {
     const text = node.data;
     const ranges = findRanges(text, terms);
     if (!ranges.length) continue;
-    // DocumentFragment has no Obsidian createEl equivalent; this fragment
-    // keeps the replacement atomic and avoids touching the rendered tree per range.
-    // eslint-disable-next-line obsidianmd/prefer-create-el
-    const frag = doc.createDocumentFragment();
+    const parent = node.parentElement;
+    if (!parent) continue;
     let pos = 0;
     for (const [a, b] of ranges) {
-      if (a > pos) frag.appendChild(doc.createTextNode(text.slice(pos, a)));
-      const markFragment = doc.createRange().createContextualFragment("<mark></mark>");
-      const mark = markFragment.firstElementChild;
-      if (!mark) continue;
-      mark.className = "zl-hit";
+      if (a > pos) parent.insertBefore(doc.createTextNode(text.slice(pos, a)), node);
+      const mark = parent.createEl("mark", { cls: "zl-hit" });
       mark.textContent = text.slice(a, b);
-      frag.appendChild(mark);
+      parent.insertBefore(mark, node);
       pos = b;
       count++;
     }
-    if (pos < text.length) frag.appendChild(doc.createTextNode(text.slice(pos)));
-    node.parentNode?.replaceChild(frag, node);
+    if (pos < text.length) parent.insertBefore(doc.createTextNode(text.slice(pos)), node);
+    node.remove();
   }
   return count;
 }
