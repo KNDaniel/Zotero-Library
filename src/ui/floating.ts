@@ -51,10 +51,8 @@ export class Floating {
   ) {
     this.doc = trigger.ownerDocument;
     this.win = this.doc.defaultView ?? window;
-    this.el = this.doc.createElement("div");
-    this.el.className = `zl-float is-hidden ${opts.cls ?? ""}`.trim();
+    this.el = this.doc.body.createDiv({ cls: `zl-float is-hidden ${opts.cls ?? ""}`.trim() });
     this.el.appendChild(content);
-    this.doc.body.appendChild(this.el);
     Floating.all.add(this);
   }
 
@@ -101,18 +99,26 @@ export class Floating {
     // Debajo si cabe razonablemente; si no, donde haya más sitio
     const useBelow = below >= Math.min(cap, 200) || below >= above;
     const room = Math.max(120, useBelow ? below : above);
-    this.el.style.maxHeight = `${Math.min(cap, room)}px`;
     const width = Math.max(this.opts.minWidth ?? 0, r.width);
-    this.el.style.minWidth = `${width}px`;
-    this.el.style.maxWidth = `${Math.max(240, vw - margin * 2)}px`;
     const left = Math.min(Math.max(margin, r.left), Math.max(margin, vw - Math.max(width, this.el.offsetWidth) - margin));
-    this.el.style.left = `${left}px`;
     if (useBelow) {
-      this.el.style.top = `${r.bottom + 2}px`;
-      this.el.style.bottom = "auto";
+      this.el.setCssStyles({
+        maxHeight: `${Math.min(cap, room)}px`,
+        minWidth: `${width}px`,
+        maxWidth: `${Math.max(240, vw - margin * 2)}px`,
+        left: `${left}px`,
+        top: `${r.bottom + 2}px`,
+        bottom: "auto",
+      });
     } else {
-      this.el.style.bottom = `${vh - r.top + 2}px`;
-      this.el.style.top = "auto";
+      this.el.setCssStyles({
+        maxHeight: `${Math.min(cap, room)}px`,
+        minWidth: `${width}px`,
+        maxWidth: `${Math.max(240, vw - margin * 2)}px`,
+        left: `${left}px`,
+        bottom: `${vh - r.top + 2}px`,
+        top: "auto",
+      });
     }
   }
 
@@ -127,8 +133,7 @@ export class Floating {
 /** Botón redondo «?» que abre una ayuda flotante con el contenido que construye `build`. */
 export function helpButton(parent: HTMLElement, build: (box: HTMLElement) => void, title = "Ayuda"): { button: HTMLElement; floating: Floating } {
   const button = parent.createEl("button", { cls: "zl-help-btn", text: "?", attr: { type: "button", title } });
-  const box = parent.ownerDocument.createElement("div");
-  box.className = "zl-help";
+  const box = parent.createDiv({ cls: "zl-help" });
   build(box);
   const floating = new Floating(button, box, { cls: "zl-float-help", maxHeight: 320, minWidth: 260 });
   button.addEventListener("click", () => floating.toggle());
@@ -137,12 +142,7 @@ export function helpButton(parent: HTMLElement, build: (box: HTMLElement) => voi
 
 /** Una fila de chuleta: la sintaxis en monoespaciado y su explicación. */
 export function helpRow(box: HTMLElement, syntax: string, text: string): void {
-  const row = box.ownerDocument.createElement("div");
-  row.className = "zl-help-row";
-  const code = box.ownerDocument.createElement("code");
-  code.textContent = syntax;
-  const span = box.ownerDocument.createElement("span");
-  span.textContent = text;
-  row.append(code, span);
-  box.appendChild(row);
+  const row = box.createDiv({ cls: "zl-help-row" });
+  row.createEl("code", { text: syntax });
+  row.createSpan({ text });
 }

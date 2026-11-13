@@ -52,9 +52,6 @@ export function attachmentFilePath(a: ZoteroAttachment, dataDir: string): string
 
 export function annotationContext(index: LibraryIndex, a: ZoteroAnnotation, opts: ContextOptions): Record<string, unknown> {
   const attachment = index.attachments.get(a.parentKey);
-  const isPdf = !!attachment && /pdf/i.test(attachment.contentType);
-  const pdfPosition = !!a.position && a.position.rects.length > 0;
-
   let imageRelativePath = "";
   let imagePath = "";
   if (a.type === "image" && isZoteroKey(a.key)) {

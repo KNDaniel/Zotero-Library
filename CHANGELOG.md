@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.9.8 — compatibilidad con la revisión de Obsidian
+
+- Sustituye los estilos inline por clases CSS o por los helpers CSS de Obsidian.
+- Usa solo la API declarativa de ajustes, que mejora la búsqueda y evita el método `display()` obsoleto.
+- Actualiza los helpers de elementos y botones destructivos y elimina código sin uso.
+
 ## 0.9.7 — seguridad y privacidad
 
 - Restringe por defecto la API de Zotero a loopback; los servidores remotos requieren autorización explícita y HTTPS.

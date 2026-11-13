@@ -74,17 +74,17 @@ export default class ZoteroLibraryPlugin extends Plugin {
     this.addRibbonIcon("library", "Abrir Zotero Library", () => void this.activateView());
     this.addCommand({
       id: "open-view",
-      name: "Abrir Zotero Library",
+      name: "Abrir biblioteca",
       callback: () => void this.activateView(),
     });
     this.addCommand({
       id: "reset-view",
-      name: "Reiniciar la vista de Zotero Library (si se queda en negro)",
+      name: "Reiniciar la vista (si se queda en negro)",
       callback: () => void this.activateView(true),
     });
     this.addCommand({
       id: "show-log",
-      name: "Mostrar el registro de diagnóstico de Zotero Library",
+      name: "Mostrar el registro de diagnóstico",
       callback: () => new ReportModal(this.app, `Archivo: ${trace.file ?? "(sin registro en disco)"}\n\n${trace.tail(300)}`, null, "Registro de Zotero Library").open(),
     });
 

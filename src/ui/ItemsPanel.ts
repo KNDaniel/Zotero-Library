@@ -86,8 +86,7 @@ export class ItemsPanel {
     const collBtn = this.el.createEl("button", { cls: "zl-coll-btn", attr: { type: "button", title: "Limitar la lista a una o varias colecciones" } });
     this.collSummary = collBtn.createSpan({ cls: "zl-coll-label", text: "Colecciones" });
     collBtn.createSpan({ cls: "zl-coll-chevron", text: "▾" });
-    const collMenu = this.el.ownerDocument.createElement("div");
-    collMenu.className = "zl-coll-menu";
+    const collMenu = this.el.createDiv({ cls: "zl-coll-menu" });
     const subRow = collMenu.createDiv({ cls: "zl-row-inline" });
     const subLabel = subRow.createEl("label");
     this.subToggle = subLabel.createEl("input", { type: "checkbox" });
@@ -301,7 +300,7 @@ export class ItemsPanel {
     const draw = (c: ZoteroCollection, depth: number) => {
       const kids = (children.get(c.key) ?? []).sort(byName);
       const row = this.collBody.createDiv({ cls: "zl-tree-row" });
-      row.style.paddingLeft = `${depth * 16}px`;
+      row.setCssProps({ "--zl-tree-indent": `${depth * 16}px` });
       const chevron = row.createSpan({ cls: "zl-chevron", text: kids.length ? (this.expanded.has(c.key) ? "▾" : "▸") : "" });
       if (kids.length) {
         chevron.addEventListener("click", () => {
@@ -331,8 +330,7 @@ export class ItemsPanel {
     const typed = input.value.trim().toLowerCase();
     const matches = this.fieldNames.filter((f) => f.toLowerCase().includes(typed) && f.toLowerCase() !== typed).slice(0, 60);
     if (matches.length === 0) return;
-    const box = input.ownerDocument.createElement("div");
-    box.className = "zl-suggest";
+    const box = this.el.createDiv({ cls: "zl-suggest" });
     for (const f of matches) {
       const opt = box.createDiv({ cls: "zl-suggest-item", text: f });
       // mousedown (no click) y sin quitar el foco al cuadro de texto

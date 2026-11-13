@@ -49,4 +49,10 @@ export function installObsidianDom(win: Window & typeof globalThis): void {
   proto.setText = function (this: HTMLElement, t: string) {
     this.textContent = t;
   };
+  proto.setCssStyles = function (this: HTMLElement, styles: Partial<CSSStyleDeclaration>) {
+    Object.assign(this.style, styles);
+  };
+  proto.setCssProps = function (this: HTMLElement, props: Record<string, string>) {
+    for (const [key, value] of Object.entries(props)) this.style.setProperty(key, value);
+  };
 }

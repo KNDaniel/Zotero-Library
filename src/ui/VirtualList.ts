@@ -32,7 +32,7 @@ export class VirtualList<T> {
 
   setItems(items: T[], resetScroll = false): void {
     this.items = items;
-    this.spacer.style.height = `${items.length * this.opts.rowHeight}px`;
+    this.spacer.setCssStyles({ height: `${items.length * this.opts.rowHeight}px` });
     if (resetScroll) this.el.scrollTop = 0;
     this.draw();
   }
@@ -56,10 +56,10 @@ export class VirtualList<T> {
   private draw(): void {
     const [first, last] = this.visibleRange();
     this.rows.empty();
-    this.rows.style.transform = `translateY(${first * this.opts.rowHeight}px)`;
+    this.rows.setCssStyles({ transform: `translateY(${first * this.opts.rowHeight}px)` });
     for (let i = first; i < last; i++) {
       const row = this.rows.createDiv({ cls: "zl-vrow" });
-      row.style.height = `${this.opts.rowHeight}px`;
+      row.setCssStyles({ height: `${this.opts.rowHeight}px` });
       this.opts.renderRow(row, this.items[i], i);
     }
   }

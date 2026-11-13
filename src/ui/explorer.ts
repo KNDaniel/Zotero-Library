@@ -62,8 +62,7 @@ export class DataExplorer {
     this.pickBtn = this.el.createEl("button", { cls: "zl-ex-pick", attr: { type: "button", title: "Cambiar de ítem" } });
     this.pickLabel = this.pickBtn.createSpan({ cls: "zl-ex-head" });
     this.pickBtn.createSpan({ cls: "zl-coll-chevron", text: "▾" });
-    const box = this.el.ownerDocument.createElement("div");
-    box.className = "zl-ex-picker";
+    const box = this.el.createDiv({ cls: "zl-ex-picker" });
     this.pickSearch = box.createEl("input", { cls: "zl-ex-pick-search", type: "search", placeholder: "Buscar ítem…" });
     this.pickSearch.addEventListener("input", () => this.drawPicker());
     this.pickList = box.createDiv({ cls: "zl-ex-pick-list" });
@@ -185,7 +184,7 @@ export class DataExplorer {
   private renderNode(parent: HTMLElement, n: ExplorerNode, depth: number): void {
     const wrap = parent.createDiv({ cls: "zl-ex-node" });
     const row = wrap.createDiv({ cls: "zl-ex-row", attr: { "data-path": pathExpression(n.path) } });
-    row.style.paddingLeft = `${depth * 14 + 4}px`;
+    row.setCssProps({ "--zl-explorer-indent": `${depth * 14 + 4}px` });
     const toggle = row.createSpan({ cls: "zl-ex-toggle", text: n.size > 0 ? "▸" : "" });
     row.createSpan({ cls: "zl-ex-key", text: n.label, attr: { title: `Copiar ${templateVariable(n.path)}` } });
     this.valueCell(row, n);

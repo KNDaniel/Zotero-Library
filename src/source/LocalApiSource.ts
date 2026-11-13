@@ -17,7 +17,6 @@ export interface LocalApiOptions {
 
 type Query = Record<string, string | number | undefined>;
 
-const trimSlashes = (s: string) => s.replace(/^\/+|\/+$/g, "");
 const num = (v: string | undefined): number | undefined => {
   if (v === undefined || v === "") return undefined;
   const n = Number(v);

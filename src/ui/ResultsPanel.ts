@@ -428,8 +428,8 @@ export class ResultsPanel {
       } else {
         const a = b.annotation;
         if (a.color) {
-          card.style.borderLeftColor = a.color;
-          card.style.setProperty("--zl-card-color", a.color); // también tiñe el fondo cuando la tarjeta está marcada
+          card.setCssStyles({ borderLeftColor: a.color });
+          card.setCssProps({ "--zl-card-color": a.color }); // también tiñe el fondo cuando la tarjeta está marcada
         }
         card.addClass("zl-card-annotation");
         const terms = this.terms;

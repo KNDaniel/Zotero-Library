@@ -26,6 +26,10 @@
 .zl-seg-btn { border: none; background: transparent; box-shadow: none; padding: 2px 10px; height: auto; border-radius: 0; cursor: pointer; font-size: var(--font-ui-smaller); }
 .zl-seg-btn.is-active { background: var(--zl-accent); color: var(--text-on-accent); }
 .zl-input { width: 100%; }
+.zl-compare-output { white-space: pre-wrap; user-select: text; }
+.zl-report-area { width: 100%; font-family: var(--font-monospace); }
+.zl-tree-row { padding-left: var(--zl-tree-indent, 0); }
+.zl-ex-row { padding-left: var(--zl-explorer-indent, 4px); }
 .zl-select { font-size: var(--font-ui-smaller); }
 .zl-count { color: var(--zl-muted); font-size: var(--font-ui-smaller); }
 .zl-actions { margin-left: auto; display: flex; gap: var(--zl-gap-s); align-items: center; }
