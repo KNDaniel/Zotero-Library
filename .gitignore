@@ -1,0 +1,17 @@
+node_modules/
+.agents/
+AGENTS.md
+CONSTRAINTS.md
+.tools/
+dist/
+*.log
+main.js
+data.json
+library-cache.json.gz
+.codex/settings.local.json
+docs/skills-terceros.md
+docs/piloto-fase5.md
+docs/plan-robustecimiento-y-publicacion.md
+docs/revision-privacidad-seguridad-2026-11-12.md
+
+scripts/extract-golden.mjs

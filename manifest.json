@@ -1,0 +1,10 @@
+{
+  "id": "zotero-library",
+  "name": "Zotero Library",
+  "version": "0.9.6",
+  "minAppVersion": "1.15.0",
+  "description": "Explora ítems, etiquetas y anotaciones de Zotero y renderízalos o imprímelos con plantillas Nunjucks.",
+  "author": "Daniel",
+  "authorUrl": "https://github.com/KNDaniel",
+  "isDesktopOnly": true
+}

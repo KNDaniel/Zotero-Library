@@ -1,0 +1,1018 @@
+{
+  "fullTitle": "Synthetic Reference: A Test Fixture",
+  "attachmentKey": "ATTACH01",
+  "filename": "synthetic-reference.pdf",
+  "dataDir": "C:/ZoteroSynthetic",
+  "zoteroLabel": "Synthetic PDF",
+  "authors": [
+    "Example Author"
+  ],
+  "translators": [
+    "Sample Translator"
+  ],
+  "date": "2010-06-01",
+  "publisher": "Example Press",
+  "isbn": "978-0-00-000000-0",
+  "related": {
+    "key": "RELATE01",
+    "title": "Related Synthetic Reference",
+    "first": "Sample",
+    "last": "Contributor"
+  },
+  "annotations": [
+    {
+      "id": "ANN00001",
+      "type": "image",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "",
+      "comment": "Synthetic test comment 1.",
+      "pageLabel": "8",
+      "imageRelativePath": "Test Images/ATTACH01-8-x98-y662.png",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=8&annotation=ANN00001"
+    },
+    {
+      "id": "ANN00002",
+      "type": "image",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "",
+      "comment": "Synthetic test comment 2.",
+      "pageLabel": "49",
+      "imageRelativePath": "Test Images/ATTACH01-49-x139-y630.png",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=49&annotation=ANN00002"
+    },
+    {
+      "id": "ANN00003",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 3.",
+      "comment": "Synthetic test comment 3.",
+      "pageLabel": "3",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=3&annotation=ANN00003"
+    },
+    {
+      "id": "ANN00004",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 4.",
+      "comment": "Synthetic test comment 4.",
+      "pageLabel": "4",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=4&annotation=ANN00004"
+    },
+    {
+      "id": "ANN00005",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 5.",
+      "comment": "Synthetic test comment 5.",
+      "pageLabel": "5",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=5&annotation=ANN00005"
+    },
+    {
+      "id": "ANN00006",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 6.",
+      "comment": "Synthetic test comment 6.",
+      "pageLabel": "6",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=6&annotation=ANN00006"
+    },
+    {
+      "id": "ANN00007",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 7.",
+      "comment": "Synthetic test comment 7.",
+      "pageLabel": "7",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=7&annotation=ANN00007"
+    },
+    {
+      "id": "ANN00008",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 8.",
+      "comment": "Synthetic test comment 8.",
+      "pageLabel": "8",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=8&annotation=ANN00008"
+    },
+    {
+      "id": "ANN00009",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 9.",
+      "comment": "Synthetic test comment 9.",
+      "pageLabel": "9",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=9&annotation=ANN00009"
+    },
+    {
+      "id": "ANN00010",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 10.",
+      "comment": "Synthetic test comment 10.",
+      "pageLabel": "10",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=10&annotation=ANN00010"
+    },
+    {
+      "id": "ANN00011",
+      "type": "underline",
+      "colorCategory": "green",
+      "color": "#5fb236",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 11.",
+      "comment": "Synthetic test comment 11.",
+      "pageLabel": "11",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=11&annotation=ANN00011"
+    },
+    {
+      "id": "ANN00012",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 12.",
+      "comment": "Synthetic test comment 12.",
+      "pageLabel": "12",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=12&annotation=ANN00012"
+    },
+    {
+      "id": "ANN00013",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 13.",
+      "comment": "Synthetic test comment 13.",
+      "pageLabel": "13",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=13&annotation=ANN00013"
+    },
+    {
+      "id": "ANN00014",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 14.",
+      "comment": "Synthetic test comment 14.",
+      "pageLabel": "14",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=14&annotation=ANN00014"
+    },
+    {
+      "id": "ANN00015",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 15.",
+      "comment": "Synthetic test comment 15.",
+      "pageLabel": "15",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=15&annotation=ANN00015"
+    },
+    {
+      "id": "ANN00016",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 16.",
+      "comment": "Synthetic test comment 16.",
+      "pageLabel": "16",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=16&annotation=ANN00016"
+    },
+    {
+      "id": "ANN00017",
+      "type": "highlight",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 17.",
+      "comment": "Synthetic test comment 17.",
+      "pageLabel": "17",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=17&annotation=ANN00017"
+    },
+    {
+      "id": "ANN00018",
+      "type": "underline",
+      "colorCategory": "magenta",
+      "color": "#e56eee",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 18.",
+      "comment": "Synthetic test comment 18.",
+      "pageLabel": "18",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=18&annotation=ANN00018"
+    },
+    {
+      "id": "ANN00019",
+      "type": "underline",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 19.",
+      "comment": "Synthetic test comment 19.",
+      "pageLabel": "19",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=19&annotation=ANN00019"
+    },
+    {
+      "id": "ANN00020",
+      "type": "underline",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 20.",
+      "comment": "Synthetic test comment 20.",
+      "pageLabel": "20",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=20&annotation=ANN00020"
+    },
+    {
+      "id": "ANN00021",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 21.",
+      "comment": "Synthetic test comment 21.",
+      "pageLabel": "21",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=21&annotation=ANN00021"
+    },
+    {
+      "id": "ANN00022",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 22.",
+      "comment": "Synthetic test comment 22.",
+      "pageLabel": "22",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=22&annotation=ANN00022"
+    },
+    {
+      "id": "ANN00023",
+      "type": "underline",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 23.",
+      "comment": "Synthetic test comment 23.",
+      "pageLabel": "23",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=23&annotation=ANN00023"
+    },
+    {
+      "id": "ANN00024",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 24.",
+      "comment": "Synthetic test comment 24.",
+      "pageLabel": "24",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=24&annotation=ANN00024"
+    },
+    {
+      "id": "ANN00025",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 25.",
+      "comment": "Synthetic test comment 25.",
+      "pageLabel": "25",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=25&annotation=ANN00025"
+    },
+    {
+      "id": "ANN00026",
+      "type": "underline",
+      "colorCategory": "magenta",
+      "color": "#e56eee",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 26.",
+      "comment": "Synthetic test comment 26.",
+      "pageLabel": "26",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=26&annotation=ANN00026"
+    },
+    {
+      "id": "ANN00027",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 27.",
+      "comment": "Synthetic test comment 27.",
+      "pageLabel": "27",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=27&annotation=ANN00027"
+    },
+    {
+      "id": "ANN00028",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 28.",
+      "comment": "Synthetic test comment 28.",
+      "pageLabel": "28",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=28&annotation=ANN00028"
+    },
+    {
+      "id": "ANN00029",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 29.",
+      "comment": "Synthetic test comment 29.",
+      "pageLabel": "29",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=29&annotation=ANN00029"
+    },
+    {
+      "id": "ANN00030",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 30.",
+      "comment": "Synthetic test comment 30.",
+      "pageLabel": "30",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=30&annotation=ANN00030"
+    },
+    {
+      "id": "ANN00031",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 31.",
+      "comment": "Synthetic test comment 31.",
+      "pageLabel": "31",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=31&annotation=ANN00031"
+    },
+    {
+      "id": "ANN00032",
+      "type": "underline",
+      "colorCategory": "green",
+      "color": "#5fb236",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 32.",
+      "comment": "Synthetic test comment 32.",
+      "pageLabel": "32",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=32&annotation=ANN00032"
+    },
+    {
+      "id": "ANN00033",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 33.",
+      "comment": "Synthetic test comment 33.",
+      "pageLabel": "33",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=33&annotation=ANN00033"
+    },
+    {
+      "id": "ANN00034",
+      "type": "underline",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 34.",
+      "comment": "Synthetic test comment 34.",
+      "pageLabel": "34",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=34&annotation=ANN00034"
+    },
+    {
+      "id": "ANN00035",
+      "type": "highlight",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 35.",
+      "comment": "Synthetic test comment 35.",
+      "pageLabel": "35",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=35&annotation=ANN00035"
+    },
+    {
+      "id": "ANN00036",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 36.",
+      "comment": "Synthetic test comment 36.",
+      "pageLabel": "36",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=36&annotation=ANN00036"
+    },
+    {
+      "id": "ANN00037",
+      "type": "highlight",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 37.",
+      "comment": "Synthetic test comment 37.",
+      "pageLabel": "37",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=37&annotation=ANN00037"
+    },
+    {
+      "id": "ANN00038",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 38.",
+      "comment": "Synthetic test comment 38.",
+      "pageLabel": "38",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=38&annotation=ANN00038"
+    },
+    {
+      "id": "ANN00039",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 39.",
+      "comment": "Synthetic test comment 39.",
+      "pageLabel": "39",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=39&annotation=ANN00039"
+    },
+    {
+      "id": "ANN00040",
+      "type": "underline",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 40.",
+      "comment": "Synthetic test comment 40.",
+      "pageLabel": "40",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=40&annotation=ANN00040"
+    },
+    {
+      "id": "ANN00041",
+      "type": "underline",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 41.",
+      "comment": "Synthetic test comment 41.",
+      "pageLabel": "41",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=41&annotation=ANN00041"
+    },
+    {
+      "id": "ANN00042",
+      "type": "underline",
+      "colorCategory": "red",
+      "color": "#ff6666",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 42.",
+      "comment": "Synthetic test comment 42.",
+      "pageLabel": "42",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=42&annotation=ANN00042"
+    },
+    {
+      "id": "ANN00043",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 43.",
+      "comment": "Synthetic test comment 43.",
+      "pageLabel": "43",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=43&annotation=ANN00043"
+    },
+    {
+      "id": "ANN00044",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 44.",
+      "comment": "Synthetic test comment 44.",
+      "pageLabel": "44",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=44&annotation=ANN00044"
+    },
+    {
+      "id": "ANN00045",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 45.",
+      "comment": "Synthetic test comment 45.",
+      "pageLabel": "45",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=45&annotation=ANN00045"
+    },
+    {
+      "id": "ANN00046",
+      "type": "underline",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 46.",
+      "comment": "Synthetic test comment 46.",
+      "pageLabel": "46",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=46&annotation=ANN00046"
+    },
+    {
+      "id": "ANN00047",
+      "type": "highlight",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 47.",
+      "comment": "Synthetic test comment 47.",
+      "pageLabel": "47",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=47&annotation=ANN00047"
+    },
+    {
+      "id": "ANN00048",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 48.",
+      "comment": "Synthetic test comment 48.",
+      "pageLabel": "48",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=48&annotation=ANN00048"
+    },
+    {
+      "id": "ANN00049",
+      "type": "highlight",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 49.",
+      "comment": "Synthetic test comment 49.",
+      "pageLabel": "49",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=49&annotation=ANN00049"
+    },
+    {
+      "id": "ANN00050",
+      "type": "highlight",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 50.",
+      "comment": "Synthetic test comment 50.",
+      "pageLabel": "50",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=50&annotation=ANN00050"
+    },
+    {
+      "id": "ANN00051",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 51.",
+      "comment": "Synthetic test comment 51.",
+      "pageLabel": "51",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=51&annotation=ANN00051"
+    },
+    {
+      "id": "ANN00052",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 52.",
+      "comment": "Synthetic test comment 52.",
+      "pageLabel": "52",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=52&annotation=ANN00052"
+    },
+    {
+      "id": "ANN00053",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 53.",
+      "comment": "Synthetic test comment 53.",
+      "pageLabel": "53",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=53&annotation=ANN00053"
+    },
+    {
+      "id": "ANN00054",
+      "type": "highlight",
+      "colorCategory": "orange",
+      "color": "#f19837",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 54.",
+      "comment": "Synthetic test comment 54.",
+      "pageLabel": "54",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=54&annotation=ANN00054"
+    },
+    {
+      "id": "ANN00055",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 55.",
+      "comment": "Synthetic test comment 55.",
+      "pageLabel": "55",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=55&annotation=ANN00055"
+    },
+    {
+      "id": "ANN00056",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 56.",
+      "comment": "Synthetic test comment 56.",
+      "pageLabel": "56",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=56&annotation=ANN00056"
+    },
+    {
+      "id": "ANN00057",
+      "type": "highlight",
+      "colorCategory": "yellow",
+      "color": "#ffd400",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 57.",
+      "comment": "Synthetic test comment 57.",
+      "pageLabel": "57",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=57&annotation=ANN00057"
+    },
+    {
+      "id": "ANN00058",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 58.",
+      "comment": "Synthetic test comment 58.",
+      "pageLabel": "58",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=58&annotation=ANN00058"
+    },
+    {
+      "id": "ANN00059",
+      "type": "highlight",
+      "colorCategory": "orange",
+      "color": "#f19837",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 59.",
+      "comment": "Synthetic test comment 59.",
+      "pageLabel": "59",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=59&annotation=ANN00059"
+    },
+    {
+      "id": "ANN00060",
+      "type": "underline",
+      "colorCategory": "orange",
+      "color": "#f19837",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 60.",
+      "comment": "Synthetic test comment 60.",
+      "pageLabel": "60",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=60&annotation=ANN00060"
+    },
+    {
+      "id": "ANN00061",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 61.",
+      "comment": "Synthetic test comment 61.",
+      "pageLabel": "61",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=61&annotation=ANN00061"
+    },
+    {
+      "id": "ANN00062",
+      "type": "underline",
+      "colorCategory": "green",
+      "color": "#5fb236",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 62.",
+      "comment": "Synthetic test comment 62.",
+      "pageLabel": "62",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=62&annotation=ANN00062"
+    },
+    {
+      "id": "ANN00063",
+      "type": "underline",
+      "colorCategory": "green",
+      "color": "#5fb236",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 63.",
+      "comment": "Synthetic test comment 63.",
+      "pageLabel": "63",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=63&annotation=ANN00063"
+    },
+    {
+      "id": "ANN00064",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 64.",
+      "comment": "Synthetic test comment 64.",
+      "pageLabel": "64",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=64&annotation=ANN00064"
+    },
+    {
+      "id": "ANN00065",
+      "type": "highlight",
+      "colorCategory": "magenta",
+      "color": "#e56eee",
+      "tags": [
+        "synthetic-tag-2"
+      ],
+      "text": "Synthetic highlighted text 65.",
+      "comment": "Synthetic test comment 65.",
+      "pageLabel": "65",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=65&annotation=ANN00065"
+    },
+    {
+      "id": "ANN00066",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-3"
+      ],
+      "text": "Synthetic highlighted text 66.",
+      "comment": "Synthetic test comment 66.",
+      "pageLabel": "66",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=66&annotation=ANN00066"
+    },
+    {
+      "id": "ANN00067",
+      "type": "note",
+      "colorCategory": "purple",
+      "color": "#a28ae5",
+      "tags": [
+        "synthetic-tag-4"
+      ],
+      "text": "Synthetic highlighted text 67.",
+      "comment": "Synthetic test comment 67.",
+      "pageLabel": "67",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=67&annotation=ANN00067"
+    },
+    {
+      "id": "ANN00068",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-5"
+      ],
+      "text": "Synthetic highlighted text 68.",
+      "comment": "Synthetic test comment 68.",
+      "pageLabel": "68",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=68&annotation=ANN00068"
+    },
+    {
+      "id": "ANN00069",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-6"
+      ],
+      "text": "Synthetic highlighted text 69.",
+      "comment": "Synthetic test comment 69.",
+      "pageLabel": "69",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=69&annotation=ANN00069"
+    },
+    {
+      "id": "ANN00070",
+      "type": "highlight",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-7"
+      ],
+      "text": "Synthetic highlighted text 70.",
+      "comment": "Synthetic test comment 70.",
+      "pageLabel": "70",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=70&annotation=ANN00070"
+    },
+    {
+      "id": "ANN00071",
+      "type": "underline",
+      "colorCategory": "blue",
+      "color": "#2ea8e5",
+      "tags": [
+        "synthetic-tag-1"
+      ],
+      "text": "Synthetic highlighted text 71.",
+      "comment": "Synthetic test comment 71.",
+      "pageLabel": "71",
+      "imageRelativePath": "",
+      "desktopURI": "zotero://open-pdf/library/items/ATTACH01?page=71&annotation=ANN00071"
+    }
+  ]
+}

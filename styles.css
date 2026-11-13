@@ -1,0 +1,220 @@
+/* Zotero Library — estilos organizados por componente.
+   1 Tokens · 2 Base y controles · 3 Barra superior · 4 Disposición y paneles · 5 Colecciones · 6 Búsqueda
+   7 Lista de ítems · 8 Etiquetas · 9 Resultados y tarjetas · 10 Desplegables flotantes y ayuda · 11 Explorador */
+
+/* ===== 1. Tokens (se reutilizan en los desplegables flotantes y en el explorador, que viven fuera de la vista) ===== */
+.zl-view, .zl-float, .zl-explorer-modal {
+  --zl-border: var(--background-modifier-border);
+  --zl-hover: var(--background-modifier-hover);
+  --zl-active: var(--background-modifier-active-hover);
+  --zl-muted: var(--text-muted);
+  --zl-accent: var(--interactive-accent);
+  --zl-gap: var(--size-4-2);
+  --zl-gap-s: var(--size-4-1);
+  /* Casillas un 30 % más pequeñas que las de Obsidian (16 px → 11 px) */
+  --checkbox-size: 11px;
+}
+
+/* ===== 2. Base y controles ===== */
+.zl-view { padding: 0 !important; display: flex; flex-direction: column; height: 100%; container: zl / inline-size; }
+.zl-view input[type="checkbox"], .zl-float input[type="checkbox"] { width: var(--checkbox-size); height: var(--checkbox-size); flex: 0 0 auto; }
+/* «is-hidden» solo vale dentro de lo nuestro: no pisa a otros plugins ni a Obsidian */
+.zl-view .is-hidden, .zl-float.is-hidden, .zl-explorer-modal .is-hidden { display: none !important; }
+
+.zl-btn { padding: 2px 8px; height: auto; font-size: var(--font-ui-smaller); }
+.zl-seg { display: inline-flex; border: 1px solid var(--zl-border); border-radius: var(--radius-s); overflow: hidden; }
+.zl-seg-btn { border: none; background: transparent; box-shadow: none; padding: 2px 10px; height: auto; border-radius: 0; cursor: pointer; font-size: var(--font-ui-smaller); }
+.zl-seg-btn.is-active { background: var(--zl-accent); color: var(--text-on-accent); }
+.zl-input { width: 100%; }
+.zl-select { font-size: var(--font-ui-smaller); }
+.zl-count { color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+.zl-actions { margin-left: auto; display: flex; gap: var(--zl-gap-s); align-items: center; }
+.zl-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--zl-gap); }
+.zl-warning { color: var(--text-warning); font-size: var(--font-ui-smaller); }
+.zl-empty { color: var(--zl-muted); padding: var(--size-4-3); text-align: center; white-space: pre-line; }
+.zl-error { color: var(--text-error); font-size: var(--font-ui-small); white-space: pre-wrap; }
+.zl-row-tag { flex: 0 0 auto; margin-left: auto; padding: 0 6px; border-radius: var(--radius-s); background: var(--zl-border); color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+
+/* ===== 3. Barra superior ===== */
+.zl-topbar { display: flex; align-items: center; gap: var(--size-4-3); padding: var(--zl-gap) var(--size-4-3); border-bottom: 1px solid var(--zl-border); }
+.zl-status { margin-right: auto; }
+/* Solo la palabra «Local» / «Zotero» lleva color; el tiempo y el estado van en el tono normal de la barra */
+.zl-origin.is-local .zl-origin-name { color: var(--color-blue); }
+.zl-origin.is-zotero .zl-origin-name { color: var(--color-red); }
+
+/* ===== 4. Disposición y paneles ===== */
+.zl-layout { display: grid; grid-template-columns: minmax(300px, 38%) minmax(0, 1fr); gap: var(--zl-gap); flex: 1; min-height: 0; padding: var(--zl-gap); }
+.zl-panel-tabs { display: none; }
+.zl-panel-tab[aria-pressed="true"] { background: var(--interactive-accent); color: var(--text-on-accent); }
+.zl-left { display: grid; grid-template-rows: minmax(0, 3fr) minmax(0, 2fr); gap: var(--zl-gap); min-height: 0; min-width: 0; }
+.zl-right { display: flex; min-height: 0; min-width: 0; }
+.zl-panel { display: flex; flex-direction: column; gap: var(--zl-gap-s); min-height: 0; min-width: 0; flex: 1; border: 1px solid var(--zl-border); border-radius: var(--radius-m); padding: var(--zl-gap); background: var(--background-primary); overflow-x: hidden; overflow-y: auto; }
+/* Solo las listas ceden altura: campos, barras y bloques de controles conservan la suya */
+.zl-panel > :not(.zl-vlist):not(.zl-results-body) { flex-shrink: 0; }
+.zl-panel-head { display: flex; align-items: center; flex-wrap: wrap; gap: var(--zl-gap); }
+.zl-panel-head h3 { margin: 0; font-size: var(--font-ui-medium); }
+/* Se apila según el ancho de la propia vista (no el de la ventana): una pestaña estrecha junto a otra también se apila */
+@container zl (max-width: 900px) {
+  .zl-panel-tabs:not(.is-hidden) { display: flex; gap: var(--zl-gap-s); padding: 0 var(--zl-gap) var(--zl-gap-s); }
+  .zl-panel-tab { flex: 1 1 0; min-width: 0; }
+  .zl-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .zl-left, .zl-right { display: contents; }
+  .zl-layout > .zl-left, .zl-layout > .zl-right { display: contents; }
+  .zl-layout .zl-panel { display: none; grid-column: 1; grid-row: 1; }
+  .zl-layout .zl-panel.is-active-panel { display: flex; }
+}
+@supports not (container-type: inline-size) {
+  @media (max-width: 900px) {
+    .zl-panel-tabs:not(.is-hidden) { display: flex; gap: var(--zl-gap-s); padding: 0 var(--zl-gap) var(--zl-gap-s); }
+    .zl-panel-tab { flex: 1 1 0; min-width: 0; }
+    .zl-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+    .zl-left, .zl-right { display: contents; }
+    .zl-layout > .zl-left, .zl-layout > .zl-right { display: contents; }
+    .zl-layout .zl-panel { display: none; grid-column: 1; grid-row: 1; }
+    .zl-layout .zl-panel.is-active-panel { display: flex; }
+  }
+}
+
+/* ===== 5. Colecciones (botón del panel + menú flotante) ===== */
+.zl-coll-btn { display: flex; align-items: center; justify-content: space-between; gap: var(--zl-gap); width: 100%; height: auto; padding: 2px var(--zl-gap); font-size: var(--font-ui-small); color: var(--zl-muted); background: transparent; border: 1px solid var(--zl-border); box-shadow: none; cursor: pointer; text-align: left; }
+.zl-coll-btn:hover { color: var(--text-normal); background: var(--zl-hover); }
+.zl-coll-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zl-row-inline { display: flex; align-items: center; justify-content: space-between; gap: var(--zl-gap); margin: var(--zl-gap-s) 0; font-size: var(--font-ui-smaller); }
+.zl-tree { max-height: 180px; overflow: auto; }
+.zl-tree-row { display: flex; align-items: center; gap: 2px; font-size: var(--font-ui-small); }
+.zl-chevron { width: 14px; cursor: pointer; color: var(--zl-muted); user-select: none; }
+
+/* ===== 6. Búsqueda (simple, compleja y de contenido) ===== */
+.zl-search { display: flex; flex-direction: column; gap: var(--zl-gap-s); }
+.zl-search-modes { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--zl-gap); }
+.zl-field { position: relative; display: flex; align-items: center; flex: 1 1 auto; min-width: 0; }
+.zl-field .zl-input { padding-right: 28px; }
+.zl-help-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; padding: 0; border-radius: 50%; font-size: var(--font-ui-smaller); font-weight: var(--font-semibold); line-height: 1; background: var(--zl-border); color: var(--zl-muted); box-shadow: none; cursor: pointer; }
+.zl-help-btn:hover { color: var(--text-normal); background: var(--zl-active); }
+.zl-rows { display: flex; flex-direction: column; gap: var(--zl-gap-s); max-height: 11em; overflow-y: auto; }
+.zl-cond { display: flex; gap: var(--zl-gap-s); align-items: center; flex-shrink: 0; }
+.zl-cond-field { flex: 1.3; min-width: 0; }
+.zl-cond-op { flex: 0 0 auto; }
+.zl-cond-value { flex: 1; min-width: 0; }
+.zl-content-search { display: flex; gap: var(--zl-gap); align-items: center; }
+mark.zl-hit { background: var(--text-highlight-bg, #ffd40066); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+/* ===== 7. Lista de ítems (virtualizada) ===== */
+.zl-vlist { flex: 1 1 0; min-height: 80px; overflow: auto; position: relative; }
+.zl-vlist-spacer { position: relative; width: 100%; }
+.zl-vlist-rows { position: absolute; top: 0; left: 0; right: 0; }
+.zl-vrow { display: flex; align-items: center; gap: var(--zl-gap); padding: 0 var(--zl-gap); cursor: pointer; border-radius: var(--radius-s); font-size: var(--font-ui-small); overflow: hidden; }
+.zl-vrow:hover { background: var(--zl-hover); }
+.zl-vrow.is-selected { background: var(--zl-active); }
+.zl-item-label, .zl-tag-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Total de anotaciones del ítem, en tono atenuado y junto al borde derecho (se oculta si es 0). Solo el nombre se recorta. */
+.zl-ann-count { flex: 0 0 auto; min-width: 2ch; text-align: right; color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+.zl-list-opts { padding: 0 var(--zl-gap-s); }
+/* Orden, dirección, agrupación y formato de fila: en una sola fila; las listas largas se recortan, no se apilan */
+.zl-list-opts { flex-wrap: nowrap; }
+.zl-list-opts .zl-select { flex: 1 1 0; min-width: 0; max-width: none; }
+.zl-list-opts .zl-row-format { flex: 1.7 1 0; }
+.zl-list-opts .zl-btn { flex: 0 0 auto; }
+/* Con los paneles apilados sí pueden ocupar varias filas */
+@container zl (max-width: 900px) {
+  .zl-list-opts { flex-wrap: wrap; }
+  .zl-list-opts .zl-select, .zl-list-opts .zl-row-format { flex: 1 1 9em; }
+}
+.zl-group-row { display: flex; align-items: center; gap: var(--zl-gap); cursor: pointer; padding: 0 var(--zl-gap); background: var(--background-secondary-alt); border-bottom: 1px solid var(--zl-border); font-weight: var(--font-semibold); font-size: var(--font-ui-smaller); }
+.zl-group-row.is-selected, .zl-group-row.is-attachments { color: var(--text-accent); }
+.zl-group-row .zl-group-label { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zl-group-row .zl-group-check { margin: 0; cursor: pointer; }
+.zl-tag-count { color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+/* «Seleccionados»: bloque con fondo propio, cabecera subrayada y una línea de color tras el último ítem */
+.zl-group-row.is-selected { border-bottom: 2px solid var(--zl-accent); }
+.zl-item-row.in-selected-section { background: color-mix(in srgb, var(--zl-accent) 10%, transparent); }
+.zl-item-row.in-selected-section:hover { background: color-mix(in srgb, var(--zl-accent) 18%, transparent); }
+.zl-item-row.is-section-last { border-bottom: 2px solid var(--zl-accent); border-radius: 0; }
+.zl-attachment-note { margin-top: var(--zl-gap-s); color: var(--zl-muted); font-size: var(--font-ui-smaller); font-style: italic; }
+
+/* ===== 8. Etiquetas ===== */
+.zl-chosen { display: flex; flex-direction: column; gap: var(--zl-gap-s); }
+.zl-chosen-head { cursor: pointer; color: var(--zl-muted); font-size: var(--font-ui-smaller); user-select: none; }
+.zl-chosen-head:hover { color: var(--text-normal); }
+.zl-chips { display: flex; flex-wrap: wrap; gap: var(--zl-gap-s); }
+.zl-chip { cursor: pointer; padding: 1px 8px; border-radius: var(--radius-l); background: var(--zl-accent); color: var(--text-on-accent); font-size: var(--font-ui-smaller); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ===== 9. Resultados y tarjetas ===== */
+.zl-results-body { flex: 1; min-height: 0; overflow: auto; padding-right: var(--zl-gap-s); }
+.zl-group { margin: var(--size-4-3) 0 var(--zl-gap-s); color: var(--zl-muted); border-bottom: 1px solid var(--zl-border); cursor: pointer; user-select: none; display: flex; align-items: center; gap: var(--zl-gap-s); }
+.zl-group::before { content: "▾"; display: inline-block; width: 1em; flex: 0 0 auto; }
+.zl-group-wrap.is-collapsed > .zl-group::before { content: "▸"; }
+.zl-group::after { content: attr(data-marked); color: var(--text-accent); font-size: var(--font-ui-smaller); font-weight: var(--font-normal); }
+.zl-group:hover, .zl-group:focus-visible { color: var(--text-normal); }
+.zl-group-wrap.is-collapsed > .zl-group-cards { display: none; }
+.zl-card { position: relative; border: 1px solid var(--zl-border); border-left-width: 4px; border-radius: var(--radius-m); padding: var(--zl-gap) var(--size-4-3); margin-bottom: var(--zl-gap); }
+/* Marcada: fondo teñido muy sutil con el color de la anotación (o el acento del tema en los ítems), mezclado con el fondo de la
+   tarjeta sin tocar el texto: 8 % en oscuro y 12 % en claro. --zl-mark-tint se puede ajustar con un snippet de CSS. */
+.zl-card.is-marked { --zl-mark-tint: 8%; background: color-mix(in srgb, var(--zl-card-color, var(--zl-accent)) var(--zl-mark-tint), var(--background-primary)); }
+.theme-light .zl-card.is-marked { --zl-mark-tint: 12%; }
+.zl-card.is-marked:not(.zl-card-annotation) { border-left-color: var(--zl-accent); }
+.zl-card-body > :first-child { margin-top: 0; }
+.zl-card-body > :last-child { margin-bottom: 0; }
+.zl-card-body img { max-width: 100%; }
+/* Botones de la tarjeta: siempre legibles (sin opacidad que los haga parecer desactivados) */
+.zl-card-actions { display: flex; gap: var(--zl-gap-s); justify-content: flex-end; margin-top: var(--zl-gap); }
+.zl-card-actions .zl-btn { background: transparent; color: var(--text-normal); border: 1px solid var(--zl-border); box-shadow: none; }
+.zl-card-actions .zl-btn:hover { background: var(--zl-hover); border-color: var(--zl-accent); }
+.zl-card-actions .zl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.zl-badges { display: flex; flex-wrap: wrap; gap: var(--zl-gap-s); margin-top: var(--zl-gap); }
+.zl-badge { cursor: pointer; padding: 1px 8px; border-radius: var(--radius-l); background: var(--background-secondary); border: 1px solid var(--zl-border); font-size: var(--font-ui-smaller); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zl-badge:hover { border-color: var(--zl-accent); }
+.zl-badge.is-selected { background: var(--zl-accent); color: var(--text-on-accent); border-color: var(--zl-accent); }
+.zl-marks { display: flex; flex-wrap: wrap; align-items: center; gap: var(--zl-gap); padding: var(--zl-gap-s) 0; font-size: var(--font-ui-smaller); color: var(--text-accent); }
+.zl-marks-text { flex: 1 1 auto; }
+.zl-output { display: flex; flex-wrap: wrap; align-items: center; gap: var(--zl-gap); padding: var(--zl-gap-s) 0; border-top: 1px solid var(--zl-border); }
+.zl-output-label { color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+.zl-output-template { max-width: 220px; }
+.zl-output-style { flex: 0 1 200px; }
+.zl-output-style .zl-input { width: 100%; }
+.zl-output .zl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.zl-output-status { min-height: 1.2em; font-size: var(--font-ui-smaller); color: var(--zl-muted); white-space: pre-line; }
+.zl-output-status.is-error { color: var(--text-error); }
+.zl-more { text-align: center; padding: var(--zl-gap); }
+
+/* ===== 10. Desplegables flotantes y ayuda «?» ===== */
+.zl-float { position: fixed; z-index: var(--layer-popover, 40); overflow: auto; box-sizing: border-box; padding: var(--zl-gap); background: var(--background-primary); border: 1px solid var(--zl-border); border-radius: var(--radius-m); box-shadow: var(--shadow-s); color: var(--text-normal); font-size: var(--font-ui-small); }
+.zl-float-collections .zl-tree { max-height: none; }
+.zl-float-help { max-width: 380px; }
+.zl-help-title { margin-bottom: var(--zl-gap-s); font-weight: var(--font-semibold); }
+.zl-help-row { display: grid; grid-template-columns: minmax(9em, max-content) 1fr; gap: var(--zl-gap); padding: 2px 0; align-items: baseline; }
+.zl-help-row code { color: var(--text-accent); font-size: var(--font-ui-smaller); white-space: nowrap; }
+.zl-help-row span { color: var(--zl-muted); font-size: var(--font-ui-smaller); }
+.zl-float-suggest { padding: var(--zl-gap-s); }
+.zl-suggest-item { padding: 3px var(--zl-gap); border-radius: var(--radius-s); cursor: pointer; }
+.zl-suggest-item:hover { background: var(--zl-hover); }
+
+/* ===== 11. Explorador de datos ===== */
+.zl-explorer-modal { width: min(900px, 92vw); }
+.zl-explorer { display: flex; flex-direction: column; gap: var(--zl-gap); }
+.zl-ex-head { font-weight: var(--font-semibold); color: var(--text-normal); overflow-wrap: anywhere; }
+/* Selector de ítem: botón con el ítem actual y desplegable con buscador sobre toda la biblioteca */
+.zl-ex-pick { display: flex; align-items: center; justify-content: space-between; gap: var(--zl-gap); width: 100%; height: auto; padding: var(--zl-gap-s) var(--zl-gap); text-align: left; cursor: pointer; }
+.zl-ex-pick .zl-ex-head { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* El modal de Obsidian está por encima de los popovers: el desplegable del selector se sitúa sobre el modal */
+.zl-float.zl-float-explorer { z-index: calc(var(--layer-modal, 50) + 5); padding: 0; }
+.zl-ex-pick-search { position: sticky; top: 0; width: 100%; margin: 0; border-radius: 0; }
+.zl-ex-pick-item { padding: 3px var(--zl-gap); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-ui-small); }
+.zl-ex-pick-item:hover { background: var(--zl-hover); }
+.zl-ex-pick-item.is-selected-item { color: var(--text-accent); }
+.zl-ex-pick-item.is-current { background: var(--zl-active); font-weight: var(--font-semibold); }
+.zl-ex-search { width: 100%; }
+.zl-ex-note { font-size: var(--font-ui-smaller); color: var(--zl-muted); min-height: 1em; }
+.zl-ex-tree { max-height: 55vh; overflow: auto; border: 1px solid var(--zl-border); border-radius: var(--radius-s); padding: var(--zl-gap-s) 0; }
+.zl-ex-row { display: flex; align-items: baseline; gap: var(--zl-gap); padding: 1px var(--zl-gap); cursor: pointer; font-size: var(--font-ui-small); }
+.zl-ex-row:hover { background: var(--zl-hover); }
+.zl-ex-row.is-flat { flex-wrap: wrap; }
+.zl-ex-toggle { display: inline-block; width: 1em; flex: none; color: var(--zl-muted); text-align: center; }
+.zl-ex-key { font-family: var(--font-monospace); color: var(--text-accent); overflow-wrap: anywhere; user-select: text; border-radius: var(--radius-s); }
+.zl-ex-val { color: var(--zl-muted); overflow-wrap: anywhere; min-width: 0; user-select: text; border-radius: var(--radius-s); }
+/* Nombre y valor se copian por separado: cada uno se resalta al pasar el ratón */
+.zl-ex-key:hover { background: var(--zl-active); text-decoration: underline; }
+.zl-ex-val:hover { background: var(--zl-active); color: var(--text-normal); text-decoration: underline; }
+.zl-ex-val.is-empty, .zl-ex-val.is-null { font-style: italic; opacity: 0.7; }
+.zl-ex-more { margin: var(--zl-gap-s) var(--size-4-4); }
+.zl-ex-hint { font-size: var(--font-ui-smaller); color: var(--text-faint); }
