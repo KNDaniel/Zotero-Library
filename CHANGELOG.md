@@ -1,5 +1,14 @@
 # Cambios
 
+## 0.9.7 — seguridad y privacidad
+
+- Restringe por defecto la API de Zotero a loopback; los servidores remotos requieren autorización explícita y HTTPS.
+- Valida la URL, la ruta de biblioteca y las carpetas configuradas antes de usarlas.
+- Aísla los datos expuestos a las plantillas Nunjucks y advierte que solo deben usarse plantillas de confianza.
+- Redacta rutas y URLs sensibles de los registros y evita consultar rutas de adjuntos malformadas.
+- Confirma antes de sobrescribir informes y limita el acceso al portapapeles a acciones explícitas.
+- Añade ajustes buscables y CI con pruebas multiplataforma, build reproducible y atestación de artefactos.
+
 ## 0.9.6 — versión inicial (12-nov-2026)
 
 - Explora ítems, colecciones, etiquetas y anotaciones de Zotero en tres paneles coordinados.

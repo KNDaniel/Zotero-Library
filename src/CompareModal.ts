@@ -1,5 +1,6 @@
 import { App, Modal, Notice, Setting } from "obsidian";
 import { annotationKeysIn, compareText, formatComparison } from "./template/compare";
+import { writeClipboardText } from "./clipboard";
 
 export interface CompareState {
   template: string;
@@ -94,7 +95,7 @@ export class CompareModal extends Modal {
       .addButton((b) => b.setButtonText("Comparar").setCta().onClick(() => void this.run()))
       .addButton((b) =>
         b.setButtonText("Copiar resultado").onClick(async () => {
-          await navigator.clipboard.writeText(this.lastText);
+          await writeClipboardText(this.lastText);
           new Notice("Copiado al portapapeles");
         }),
       );

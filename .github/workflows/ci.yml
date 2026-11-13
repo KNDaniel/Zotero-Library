@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["*"]
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.18.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run check
+
+  verify:
+    needs: compatibility
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.18.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - name: Check deterministic production build
+        run: |
+          first=$(sha256sum main.js | cut -d ' ' -f 1)
+          pnpm run build
+          second=$(sha256sum main.js | cut -d ' ' -f 1)
+          test "$first" = "$second"
+      - name: Prepare and verify release candidate
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          pnpm run release:prepare
+          pnpm run release:verify -- "dist/zotero-library-$(node -p 'require("./package.json").version')"
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: zotero-library-${{ github.ref_name }}
+          path: dist/zotero-library-*/
+          if-no-files-found: error
+      - name: Attest release artifacts
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/zotero-library-*/*

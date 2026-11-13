@@ -24,6 +24,32 @@ export class TemplateError extends Error {
 }
 
 /**
+ * Plantillas reciben una copia de datos JSON, nunca objetos vivos de Obsidian
+ * ni del plugin. Se quitan propiedades de prototipo para que metadatos externos
+ * no puedan introducir getters o prototipos en el contexto.
+ */
+function templateData(value: unknown, seen = new WeakMap<object, unknown>()): unknown {
+  if (value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value;
+  if (typeof value !== "object") return undefined;
+  const known = seen.get(value);
+  if (known !== undefined) return known;
+  if (Array.isArray(value)) {
+    const result: unknown[] = [];
+    seen.set(value, result);
+    for (const entry of value) result.push(templateData(entry, seen));
+    for (const key of ["constructor", "prototype", "__proto__"]) Object.defineProperty(result, key, { value: undefined, enumerable: false });
+    return result;
+  }
+  const result: Record<string, unknown> = Object.create(null) as Record<string, unknown>;
+  seen.set(value, result);
+  for (const [key, entry] of Object.entries(value)) {
+    if (key === "__proto__" || key === "prototype" || key === "constructor") continue;
+    result[key] = templateData(entry, seen);
+  }
+  return result;
+}
+
+/**
  * Motor Nunjucks con la misma configuración que necesitan tus plantillas:
  * sin autoescape (el HTML de Zotero pasa tal cual) y con los filtros `format`
  * y `filterby` de Zotero Integration.
@@ -107,7 +133,7 @@ export class TemplateEngine {
         if (this.compiled.size >= 200) this.compiled.clear();
         this.compiled.set(source, tpl);
       }
-      return tpl.render(context as Record<string, unknown>);
+      return tpl.render(templateData(context) as Record<string, unknown>);
     } catch (e) {
       throw new TemplateError((e as Error).message, name);
     }

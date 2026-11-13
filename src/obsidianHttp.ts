@@ -4,6 +4,19 @@ import type { HttpClient } from "./source/http";
 
 const BIG = 1_000_000;
 
+/** No registra query strings ni claves/IDs de biblioteca incluidos en rutas. */
+export function safeRequestLabel(rawUrl: string): string {
+  try {
+    const url = new URL(rawUrl);
+    const path = url.pathname
+      .replace(/\/(?:users|groups)\/[^/]+/gi, "/[library]")
+      .replace(/\/items\/[A-Z0-9]{8}(?=\/|$)/g, "/items/[key]");
+    return path.slice(0, 90);
+  } catch {
+    return "[URL inválida]";
+  }
+}
+
 /**
  * requestUrl evita los problemas de CORS al hablar con localhost. El cuerpo se
  * decodifica SOLO cuando alguien lo pide y una vez (antes se leían `text` y
@@ -18,14 +31,7 @@ export const obsidianHttp: HttpClient = async ({ url, headers }) => {
   for (const [k, v] of Object.entries(r.headers ?? {})) lower[k.toLowerCase()] = v;
 
   const size = r.arrayBuffer?.byteLength ?? 0;
-  const where = (() => {
-    try {
-      const u = new URL(url);
-      return `${u.pathname}${u.search}`.slice(0, 90);
-    } catch {
-      return url.slice(0, 90);
-    }
-  })();
+  const where = safeRequestLabel(url);
   if (size > BIG || waited > 3000) trace.log(`http ${where}: estado ${r.status}, ${(size / 1e6).toFixed(1)} MB, espera ${waited} ms`);
   const slow = (what: string, since: number) => {
     const ms = Date.now() - since;

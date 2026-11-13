@@ -1,3 +1,4 @@
+import { isAbsolute } from "node:path";
 import type { LibraryIndex } from "../index/LibraryIndex";
 import { IMAGE_NAME_STRATEGIES, imageBaseName, imageParts } from "../model/imageName";
 import { relatedItemKeys } from "../model/normalize";
@@ -296,6 +297,9 @@ export async function runVerification(opts: VerifyOptions): Promise<Check[]> {
   checks.push(
     await guard("files", "Archivos locales (carpeta de datos de Zotero)", async () => {
       const details: string[] = [`Carpeta de datos: ${code(dataDir)}.`];
+      if (!isAbsolute(dataDir)) {
+        return { status: "warn", details: [...details, "La ruta debe ser absoluta; corrígela en los ajustes. No se consultó el sistema de archivos."] };
+      }
       if (!(await fs.exists(dataDir))) {
         return { status: "fail", details: [...details, "La carpeta no existe: corrígela en los ajustes."] };
       }
@@ -305,10 +309,18 @@ export async function runVerification(opts: VerifyOptions): Promise<Check[]> {
 
       const files = [...index.attachments.values()].filter((a) => a.linkMode === "imported_file" && a.filename).slice(0, 5);
       let present = 0;
+      let unsafe = 0;
       for (const a of files) {
+        // Zotero API metadata is external input. Restrict both path components
+        // before asking the filesystem whether an attachment exists.
+        if (!/^[A-Z0-9]{8}$/.test(a.key) || !a.filename || /[\\/\u0000-\u001f]/.test(a.filename) || a.filename === "." || a.filename === "..") {
+          unsafe++;
+          continue;
+        }
         if (await fs.exists(joinPath(storage, a.key, a.filename))) present++;
       }
       if (files.length) details.push(`Archivos de adjuntos importados encontrados: ${present} de ${files.length} comprobados.`);
+      if (unsafe) details.push(`Se omitieron ${unsafe} rutas de adjuntos con componentes no válidos.`);
 
       const images = annotations.filter((a) => a.type === "image");
       const img = images[0];

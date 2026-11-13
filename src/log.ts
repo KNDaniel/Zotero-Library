@@ -1,5 +1,6 @@
 import { appendFileSync, existsSync, readFileSync, statSync, writeFileSync } from "fs";
 import { join } from "path";
+import { isAbsolute, relative, resolve, sep } from "path";
 
 const MAX_BYTES = 400 * 1024;
 
@@ -13,17 +14,22 @@ export class Tracer {
   private t0 = Date.now();
 
   /** `basePath`: carpeta del vault en disco; `dir`: carpeta del plugin dentro del vault. */
-  init(basePath: string | null | undefined, dir: string | undefined, version: string): void {
+  init(basePath: string | null | undefined, dir: string | undefined, version: string, platform = process.platform): void {
     this.t0 = Date.now();
     if (!basePath || !dir) return;
     try {
-      this.path = join(basePath, dir, "zotero-library.log");
+      const root = resolve(basePath);
+      const folder = resolve(root, dir);
+      const insideVault = relative(root, folder);
+      if (!insideVault || insideVault === ".." || insideVault.startsWith(`..${sep}`) || isAbsolute(insideVault)) return;
+      this.path = join(folder, "zotero-library.log");
       // Si el archivo creció demasiado, se empieza de nuevo.
       if (existsSync(this.path) && statSync(this.path).size > MAX_BYTES) writeFileSync(this.path, "");
     } catch {
       this.path = null;
     }
-    this.log(`=== Zotero Library ${version} · ${process.platform} · Obsidian ${typeof navigator !== "undefined" ? navigator.userAgent.match(/obsidian\/([\d.]+)/i)?.[1] ?? "?" : "?"} ===`);
+    const platformName = platform === "win32" ? "Windows" : platform === "darwin" ? "macOS" : platform === "linux" ? "Linux" : "otro";
+    this.log(`=== Zotero Library ${version} · ${platformName} · Obsidian ===`);
   }
 
   get file(): string | null {
@@ -43,7 +49,9 @@ export class Tracer {
 
   error(where: string, e: unknown): void {
     const err = e as Error | undefined;
-    this.log(`ERROR en ${where}: ${err?.stack ?? err?.message ?? String(e)}`);
+    const name = err?.name || "Error";
+    const message = err?.message || String(e);
+    this.log(`ERROR en ${where}: ${name}: ${redactLocalPaths(message)}`);
   }
 
   /** Últimas líneas del registro (para mostrarlas dentro de Obsidian). */
@@ -55,6 +63,13 @@ export class Tracer {
       return "(no se pudo leer el registro)";
     }
   }
+}
+
+function redactLocalPaths(message: string): string {
+  return message
+    .replace(/\b[A-Za-z]:[\\/][^\s"'<>]+/g, "[ruta local]")
+    .replace(/(?:\\\\|\/)(?:Users|home)\/[^\s"'<>]+/g, "[ruta local]")
+    .replace(/https?:\/\/[^\s"'<>]+/g, "[URL]");
 }
 
 export const trace = new Tracer();

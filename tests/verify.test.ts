@@ -87,6 +87,37 @@ describe("informe de verificación", () => {
     expect(checks.find((c) => c.id === "files")!.status).toBe("fail");
   });
 
+  it("no consulta rutas relativas de datos de Zotero en el sistema de archivos", async () => {
+    const requests: string[] = [];
+    const checks = await runVerification({
+      source,
+      index: library(ok),
+      fs: { exists: async (path) => { requests.push(path); return false; }, readdir: async () => [] },
+      dataDir: "relative/Zotero",
+    });
+    const files = checks.find((c) => c.id === "files")!;
+    expect(files.status).toBe("warn");
+    expect(files.details.join("\n")).toContain("No se consultó el sistema de archivos");
+    expect(requests).toEqual([]);
+  });
+
+  it("no consulta rutas de adjuntos con traversal en metadatos de Zotero", async () => {
+    const raw = library(ok).toRaw();
+    raw.entities.push(attachment("ATTACH02", "ITEMAAAA", { filename: "../outside.pdf" }));
+    const requests: string[] = [];
+    const checks = await runVerification({
+      source,
+      index: LibraryIndex.fromRaw(raw),
+      fs: {
+        exists: async (path) => { requests.push(path); return ["/z", "/z/storage"].includes(path); },
+        readdir: async () => [],
+      },
+      dataDir: "/z",
+    });
+    expect(requests).not.toContain("/z/storage/ATTACH02/../outside.pdf");
+    expect(checks.find((c) => c.id === "files")!.details.join("\n")).toContain("rutas de adjuntos con componentes no válidos");
+  });
+
   it("distingue un error al leer cache/ de una carpeta vacía", async () => {
     const fs = createNodeFs(
       async (path) => {

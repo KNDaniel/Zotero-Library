@@ -1,4 +1,5 @@
 import { App, Modal, Notice, Setting } from "obsidian";
+import { writeClipboardText } from "./clipboard";
 
 export class ReportModal extends Modal {
   constructor(
@@ -21,7 +22,7 @@ export class ReportModal extends Modal {
         .setButtonText("Copiar")
         .setCta()
         .onClick(async () => {
-          await navigator.clipboard.writeText(this.markdown);
+          await writeClipboardText(this.markdown);
           new Notice("Copiado al portapapeles");
         }),
     );
