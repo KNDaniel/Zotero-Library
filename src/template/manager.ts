@@ -8,6 +8,11 @@ export interface TemplateFile {
   content: string;
 }
 
+export interface TemplatePathNode {
+  path: string;
+  children?: TemplatePathNode[];
+}
+
 const stripExt = (p: string) => p.replace(/\.[^./\\]+$/, "");
 const baseName = (p: string) => p.split("/").pop() ?? p;
 
@@ -49,4 +54,18 @@ export function listTemplates(paths: string[], folder: string): string[] {
     .map((p) => relativeToFolder(p, folder))
     .filter((p): p is string => p !== null && isTemplatePath(p))
     .sort((a, b) => a.localeCompare(b, "es"));
+}
+
+/** Enumera solo la rama del vault que contiene las plantillas configuradas. */
+export function listTemplatesInTree(root: TemplatePathNode, folder: string): string[] {
+  const paths: string[] = [];
+  const visit = (node: TemplatePathNode): void => {
+    if (!node.children) {
+      paths.push(node.path);
+      return;
+    }
+    for (const child of node.children) visit(child);
+  };
+  visit(root);
+  return listTemplates(paths, folder);
 }

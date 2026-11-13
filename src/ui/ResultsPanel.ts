@@ -193,7 +193,11 @@ export class ResultsPanel {
   private putCached(key: string, el: HTMLElement): void {
     this.cardCache.delete(key);
     this.cardCache.set(key, el);
-    while (this.cardCache.size > CARD_CACHE_LIMIT) this.cardCache.delete(this.cardCache.keys().next().value as string);
+    while (this.cardCache.size > CARD_CACHE_LIMIT) {
+      const oldest = this.cardCache.keys().next().value;
+      if (oldest === undefined) break;
+      this.cardCache.delete(oldest);
+    }
   }
 
   /** Lo que tardó en preparar la lista de bloques (agrupar y numerar) en el último dibujado */

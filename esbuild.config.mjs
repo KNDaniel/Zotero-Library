@@ -1,20 +1,24 @@
 import esbuild from "esbuild";
 import process from "process";
-import builtins from "builtin-modules";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { builtinModules } from "node:module";
 
 const prod = process.argv[2] === "production";
+const root = dirname(fileURLToPath(import.meta.url));
 
 const context = await esbuild.context({
-  entryPoints: ["./src/main.ts"],
+  absWorkingDir: root,
+  entryPoints: [resolve(root, "src/main.ts")],
   bundle: true,
-  external: ["obsidian", "electron", "@codemirror/*", "@lezer/*", ...builtins],
+  external: ["obsidian", "electron", "@codemirror/*", "@lezer/*", ...builtinModules, ...builtinModules.map((name) => `node:${name}`)],
   format: "cjs",
   target: "es2020",
   logLevel: "info",
   sourcemap: prod ? false : "inline",
   treeShaking: true,
   minify: prod,
-  outfile: "main.js",
+  outfile: resolve(root, "main.js"),
 });
 
 if (prod) {

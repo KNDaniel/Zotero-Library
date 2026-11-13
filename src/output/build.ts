@@ -166,6 +166,7 @@ export async function buildOutput(d: Derived, request: OutputRequest, scope: Out
 
   if (kind === "full" || kind === "meta") {
     let onlyCtx: Record<string, unknown> | null = null;
+    const onlyItem = items.length === 1 ? items[0] : undefined;
     let texts = items.map((item) => {
       let shown = d.results.annotations.get(item.key) ?? [];
       // En modo anotaciones, el ítem lleva solo las anotaciones marcadas (también las que los filtros ocultan)
@@ -176,9 +177,9 @@ export async function buildOutput(d: Derived, request: OutputRequest, scope: Out
       onlyCtx = ctx;
       return engine.render(tpl.source, ctx, tpl.name);
     });
-    if (items.length === 1) {
+    if (onlyItem) {
       single = onlyCtx;
-      singleKey = items[0]!.key;
+      singleKey = onlyItem.key;
     }
     if (items.length > 1 && settings.stripFrontmatterMulti) texts = texts.map(stripFrontmatter);
     text = joinParts(texts);
@@ -186,9 +187,10 @@ export async function buildOutput(d: Derived, request: OutputRequest, scope: Out
     // Un enlace por ítem, en el orden mostrado y uno por línea
     const lines = items.map((item) => engine.render(tpl.source, itemContext(index, item, [], [], opts), tpl.name).trim());
     text = lines.join("\n");
-    if (items.length === 1) {
-      single = itemContext(index, items[0]!, [], [], opts);
-      singleKey = items[0]!.key;
+    const onlyItem = items.length === 1 ? items[0] : undefined;
+    if (onlyItem) {
+      single = itemContext(index, onlyItem, [], [], opts);
+      singleKey = onlyItem.key;
     }
   } else if (kind === "annotations" || kind === "link") {
     const position = new Map<string, number>();
@@ -221,8 +223,8 @@ export async function buildOutput(d: Derived, request: OutputRequest, scope: Out
     }
     text = kind === "link" ? blocks.join("\n") : joinParts(blocks);
     if (annotationCount === 1 && onlyAnn) {
-      single = (onlyAnn as { ctx: Record<string, unknown> }).ctx;
-      singleKey = (onlyAnn as { key: string }).key;
+      single = onlyAnn.ctx;
+      singleKey = onlyAnn.key;
     }
   } else {
     const style = request.style || settings.defaultStyle;
@@ -237,9 +239,10 @@ export async function buildOutput(d: Derived, request: OutputRequest, scope: Out
     text = tpl.builtin
       ? entries.join("\n\n")
       : engine.render(tpl.source, { bibliography: entries, style, count: entries.length, items: items.map((i) => ({ ...i.fields, key: i.key, title: i.title })) }, tpl.name);
-    if (items.length === 1) {
-      single = itemContext(index, items[0]!, [], [], opts);
-      singleKey = items[0]!.key;
+    const onlyItem = items.length === 1 ? items[0] : undefined;
+    if (onlyItem) {
+      single = itemContext(index, onlyItem, [], [], opts);
+      singleKey = onlyItem.key;
     }
   }
 

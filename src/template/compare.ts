@@ -42,7 +42,8 @@ export function annotationKeysIn(c: Comparison): string[] {
     for (const line of [d.actual, d.expected]) {
       if (!line) continue;
       for (const m of line.matchAll(/annotation=([A-Z0-9]{8})|^\^([A-Z0-9]{8})\s*$|<br> ([A-Z0-9]{8})\s*$/g)) {
-        keys.add((m[1] ?? m[2] ?? m[3])!);
+        const key = m[1] ?? m[2] ?? m[3];
+        if (key) keys.add(key);
       }
     }
   }

@@ -1,4 +1,10 @@
-const INVALID_FILE_CHARS = /[\\/:*?"<>|#^[\]\u0000-\u001f]/g;
+const INVALID_FILE_CHARS = new Set(["\\", "/", ":", "*", "?", "\"", "<", ">", "|", "#", "^", "[", "]"]);
+
+/** Rechaza los caracteres de control que no pueden formar componentes de ruta. */
+export function hasControlCharacters(value: string): boolean {
+  for (let i = 0; i < value.length; i++) if (value.charCodeAt(i) < 0x20) return true;
+  return false;
+}
 
 /** Normaliza una carpeta relativa a la raíz del vault; null si intenta salir de ella. */
 export function normalizeVaultFolder(folder: string): string | null {
@@ -6,14 +12,14 @@ export function normalizeVaultFolder(folder: string): string | null {
   const normalized = folder.replace(/\\/g, "/").replace(/\/+$/g, "");
   if (!normalized) return "";
   const parts = normalized.split("/");
-  if (parts.some((part) => !part || part === "." || part === ".." || /[:\u0000-\u001f]/.test(part))) return null;
+  if (parts.some((part) => !part || part === "." || part === ".." || part.includes(":") || hasControlCharacters(part))) return null;
   return parts.join("/");
 }
 
 /** Convierte la plantilla a un solo nombre de archivo, sin componentes de ruta. */
 export function safeImageFileName(name: string): string | null {
   const clean = name
-    .replace(INVALID_FILE_CHARS, "-")
+    .split("").map((char) => INVALID_FILE_CHARS.has(char) || hasControlCharacters(char) ? "-" : char).join("")
     .replace(/\s+/g, " ")
     .replace(/^\.+/, "")
     .replace(/[. ]+$/g, "")
@@ -36,7 +42,8 @@ export function isImagePathInsideFolder(path: string, folder: string): boolean {
   const root = normalizeVaultFolder(folder);
   if (root === null || /^[\\/]/.test(path) || /^[A-Za-z]:/.test(path) || path.includes("\\")) return false;
   const parts = path.split("/");
-  if (parts.some((part) => !part || part === "." || part === ".." || /[:\u0000-\u001f]/.test(part))) return false;
+  if (parts.some((part) => !part || part === "." || part === ".." || part.includes(":") || hasControlCharacters(part))) return false;
   const rootParts = root ? root.split("/") : [];
-  return parts.length === rootParts.length + 1 && rootParts.every((part, i) => parts[i] === part) && parts[parts.length - 1]!.toLowerCase().endsWith(".png");
+  const fileName = parts[parts.length - 1];
+  return fileName !== undefined && parts.length === rootParts.length + 1 && rootParts.every((part, i) => parts[i] === part) && fileName.toLowerCase().endsWith(".png");
 }

@@ -5,7 +5,7 @@ import { annotationKeysIn, compareText, formatComparison } from "../src/template
 import { DEFAULT_IMAGE_NAME_TEMPLATE, annotationContext, attachmentFilePath, itemContext, standaloneAnnotationContext, type ContextOptions } from "../src/template/context";
 import { TemplateEngine, TemplateError, type MomentFn } from "../src/template/engine";
 import { fileUri, openAnnotationUri, zoteroOpenUri } from "../src/template/links";
-import { buildTemplateMap, listTemplates, relativeToFolder } from "../src/template/manager";
+import { buildTemplateMap, listTemplates, listTemplatesInTree, relativeToFolder } from "../src/template/manager";
 import { annotation, attachment, item } from "./fixtures";
 
 const engine = (templates?: Map<string, string>) => new TemplateEngine({ moment: moment as unknown as MomentFn, templates });
@@ -193,6 +193,16 @@ describe("gestor de plantillas", () => {
     expect(relativeToFolder("Zotero/Plantillas/render/item.md", "Zotero/Plantillas/")).toBe("render/item.md");
     expect(relativeToFolder("Otra/cosa.md", "Zotero/Plantillas")).toBeNull();
     expect(listTemplates(files.map((f) => f.path), "Zotero/Plantillas")).toEqual(["print/completa.md", "render/item.md"]);
+  });
+  it("recorre solo la rama configurada y omite archivos no plantilla", () => {
+    const tree = {
+      path: "Zotero/Plantillas",
+      children: [
+        { path: "Zotero/Plantillas/item.md" },
+        { path: "Zotero/Plantillas/sub", children: [{ path: "Zotero/Plantillas/sub/link.njk" }, { path: "Zotero/Plantillas/sub/image.png" }] },
+      ],
+    };
+    expect(listTemplatesInTree(tree, "Zotero/Plantillas")).toEqual(["item.md", "sub/link.njk"]);
   });
   it("cada plantilla se puede citar por ruta, sin extensión o por nombre", () => {
     const map = buildTemplateMap(files, "Zotero/Plantillas");

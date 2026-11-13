@@ -150,6 +150,21 @@ describe("informe de verificación", () => {
     expect(files.details.join("\n")).not.toContain("Error:");
   });
 
+  it("limita el adaptador de diagnóstico a la raíz real y rechaza una ruta enlazada fuera de ella", async () => {
+    const accessed: string[] = [];
+    const listed: string[] = [];
+    const fs = createNodeFs(
+      async (path) => { accessed.push(path); },
+      async (path) => { listed.push(path); return []; },
+      async (path) => path === "/z" ? "/real/z" : path === "/z/cache" ? "/outside" : `/real${path}`,
+      "/z",
+    );
+    expect(await fs.exists("/z/cache")).toBe(false);
+    await expect(fs.readdir("/z/cache")).rejects.toThrow("fuera de la carpeta");
+    expect(accessed).toEqual([]);
+    expect(listed).toEqual([]);
+  });
+
   it("limita a ocho las comprobaciones concurrentes de PNG y conserva los recuentos", async () => {
     const imageCount = 24;
     const index = LibraryIndex.fromRaw({

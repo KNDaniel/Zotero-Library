@@ -1,5 +1,5 @@
 import { buildContentFilter, type ContentScope } from "../filter/content";
-import { contextOf, knownFieldNames } from "../filter/fields";
+import { knownFieldNames } from "../filter/fields";
 import type { Condition, QuerySpec } from "../filter/query";
 import { parseQuery } from "../filter/query";
 import {

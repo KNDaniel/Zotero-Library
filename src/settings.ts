@@ -2,6 +2,7 @@ import { DEFAULT_NOTE_NAME_TEMPLATE } from "./output/noteName";
 import { homedir } from "os";
 import { DEFAULT_IMAGE_NAME_TEMPLATE } from "./template/context";
 import type { ViewState } from "./ui/state";
+import { normalizeVaultFolder } from "./vaultPaths";
 
 export interface ZoteroLibrarySettings {
   /** URL base del servidor local de Zotero (127.0.0.1 evita problemas de IPv6 con «localhost») */
@@ -92,4 +93,48 @@ export function defaultSettings(): ZoteroLibrarySettings {
     imagesFolder: "Recursos/Img. Titulos",
     imageNameTemplate: DEFAULT_IMAGE_NAME_TEMPLATE,
   };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Mergea datos persistidos sin confiar en el tipo `any` devuelto por loadData(). */
+export function mergeStoredSettings(saved: unknown): ZoteroLibrarySettings {
+  const defaults = defaultSettings();
+  const merged = { ...defaults };
+  if (!isRecord(saved)) return merged;
+
+  const stringKeys: Array<keyof ZoteroLibrarySettings> = [
+    "baseUrl", "libraryPath", "zoteroDataDir", "templatesFolder", "defaultRowFormat",
+    "defaultItemRender", "defaultAnnotationRender", "defaultPrintFull", "defaultPrintMeta",
+    "defaultPrintAnnotations", "defaultPrintBibliography", "defaultPrintLink", "bibliographyStyle",
+    "compareTemplate", "compareItemKey", "compareNotePath", "newNoteFolder", "noteNameItem",
+    "noteNameAnnotation", "imagesFolder", "imageNameTemplate",
+  ];
+  const mergedRecord = merged as unknown as Record<string, unknown>;
+  for (const key of stringKeys) {
+    const value = saved[key];
+    if (typeof value === "string") mergedRecord[key] = value;
+  }
+
+  const booleanKeys: Array<keyof ZoteroLibrarySettings> = [
+    "allowRemoteHost", "useDiskCache", "openNewNote", "stripFrontmatterMulti", "groupHeaders", "copyImagesOnOutput",
+  ];
+  for (const key of booleanKeys) {
+    const value = saved[key];
+    if (typeof value === "boolean") merged[key] = value as never;
+  }
+
+  if (typeof saved.lastSyncAt === "number" && Number.isFinite(saved.lastSyncAt) && saved.lastSyncAt >= 0) {
+    merged.lastSyncAt = saved.lastSyncAt;
+  }
+  if (isRecord(saved.viewState)) merged.viewState = saved.viewState as Partial<ViewState>;
+
+  for (const key of ["templatesFolder", "newNoteFolder", "imagesFolder"] as const) {
+    const normalized = normalizeVaultFolder(merged[key]);
+    if (normalized === null) merged[key] = defaults[key];
+    else merged[key] = normalized;
+  }
+  return merged;
 }

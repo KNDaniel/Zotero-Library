@@ -82,7 +82,7 @@ export class ZoteroLibrarySettingTab extends PluginSettingTab {
             control: { type: "text" as const, key: "libraryPath", placeholder: "users/0", validate: (value: string) => { try { validateLibraryPath(value); } catch (error) { return (error as Error).message; } } },
           },
           {
-            ...textControl("Carpeta de datos de Zotero", "El plugin lee storage/ para ubicar adjuntos y cache/library/ para imágenes. Copia PNG al vault solo si activas esa opción y generas una salida.", "zoteroDataDir"),
+            ...textControl("Carpeta de datos de Zotero", "El plugin consulta la existencia de algunos adjuntos en storage/ y cache/library/. Lee PNG de cache/library/ solo cuando una salida los referencia y activas su copia al vault.", "zoteroDataDir"),
             control: { type: "text" as const, key: "zoteroDataDir", validate: (value: string) => !isAbsolute(value.trim()) ? "Indica una ruta absoluta a la carpeta de datos de Zotero." : undefined },
           },
           saveButton("Probar conexión", "Consulta Zotero usando el host validado de arriba.", "Probar conexión", () => this.plugin.testConnection()),
@@ -97,7 +97,7 @@ export class ZoteroLibrarySettingTab extends PluginSettingTab {
         items: [
           {
             name: "Confianza de plantillas",
-            desc: "Las plantillas Nunjucks pueden generar contenido activo. Usa solo plantillas de fuentes en las que confíes; reciben una copia de datos bibliográficos y no tienen acceso a las API de Obsidian ni al sistema de archivos.",
+            desc: "Nunjucks no aísla las plantillas: su código se ejecuta en el contexto del plugin. Usa solo plantillas propias o revisadas. El plugin les pasa una copia de datos bibliográficos, no objetos vivos de Obsidian ni del plugin.",
           },
           { name: "Carpeta de plantillas", desc: "Carpeta del vault donde se buscan archivos .md, .njk y .txt.", control: { type: "folder" as const, key: "templatesFolder", placeholder: "Zotero Library/Plantillas", validate: (value: string) => normalizeVaultFolder(value) === null ? "La carpeta debe quedar dentro del vault." : undefined } },
           saveButton("Editar plantilla incluida", "Crea una nota con una plantilla predeterminada para editarla.", "Elegir plantilla…", () => this.plugin.pickDefaultTemplate()),

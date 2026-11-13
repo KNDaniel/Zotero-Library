@@ -1,6 +1,6 @@
 # Guía de usuario
 
-Esta guía corresponde a Zotero Library 0.9.7. El plugin es de escritorio y lee la biblioteca mediante la API local de Zotero.
+Esta guía corresponde a Zotero Library 0.9.9. El plugin es de escritorio y lee la biblioteca mediante la API local de Zotero.
 
 ## Requisitos y conexión
 
@@ -9,7 +9,7 @@ Esta guía corresponde a Zotero Library 0.9.7. El plugin es de escritorio y lee 
 3. En **Ajustes → Zotero Library**, revisa:
    - **URL del servidor**: por defecto `http://127.0.0.1:23119`. Loopback es el único destino permitido de forma predeterminada. Para otro host, activa **Permitir servidor remoto**; los hosts remotos deben usar HTTPS y recibirán las solicitudes de lectura y las claves consultadas.
    - **Biblioteca**: `users/0` para la personal o `groups/<id>` para un grupo.
-   - **Carpeta de datos de Zotero**: la que contiene `storage/` y `cache/`; se usa para localizar adjuntos e imágenes.
+   - **Carpeta de datos de Zotero**: la que contiene `storage/` y `cache/`; el plugin consulta la existencia de algunos adjuntos e imágenes, y solo lee PNG de `cache/library/` al copiarlos al vault durante una salida.
 4. Pulsa **Probar conexión** o ejecuta **Probar conexión con Zotero** desde la paleta.
 
 La primera carga puede tardar; el estado aparece en la vista. Si la copia en disco está activada, el plugin puede mostrar datos de la última sincronización con Zotero cerrado.
@@ -42,7 +42,7 @@ El contexto de ítem ofrece campos de Zotero en el nivel superior y variables co
 
 Hay plantillas independientes para el formato de fila, tarjetas de ítems/anotaciones, salidas de metadata, anotaciones y enlaces. El desplegable **Por defecto** usa la plantilla incluida. El botón **Editar una plantilla por defecto** crea una nota editable en la raíz del vault; después muévela a la carpeta configurada y selecciónala.
 
-**Confianza:** Nunjucks no ejecuta las plantillas en un sandbox y el plugin desactiva el autoescape para conservar HTML. Trata las plantillas como código de confianza y no uses plantillas de procedencia desconocida. Obsidian neutraliza ciertos elementos y atributos activos al renderizar, pero el plugin no garantiza la neutralización de todo contenido HTML posible.
+**Confianza:** Nunjucks no aísla las plantillas y el plugin desactiva el autoescape para conservar HTML. Trata las plantillas como código de confianza y no uses plantillas de procedencia desconocida. Obsidian neutraliza ciertos elementos y atributos activos al renderizar, pero el plugin no garantiza la neutralización de todo contenido HTML posible.
 
 ## Salidas
 
@@ -51,6 +51,8 @@ La barra **Salida** del panel de resultados ofrece:
 - **Metadata + anotaciones**, **Solo metadata**, **Solo anotaciones**, **Bibliografía** y **Enlace Markdown**.
 - **Copiar al portapapeles**, **Insertar en la nota activa** o **Nueva nota** en la carpeta configurada.
 - Plantillas y estilo CSL configurables. La bibliografía la genera Zotero.
+
+El plugin no lee el contenido previo del portapapeles. Solo escribe el resultado cuando eliges explícitamente **Copiar**.
 
 La salida sigue el orden, la agrupación y el filtro de etiquetas visibles. Al reunir varios ítems, se puede quitar el frontmatter de cada fragmento; con un solo ítem la plantilla se conserva íntegra. Si una nota nueva ya existe, el plugin agrega la clave de Zotero y, si es necesario, un sufijo numérico para no sobrescribirla.
 

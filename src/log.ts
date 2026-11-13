@@ -1,33 +1,51 @@
-import { appendFileSync, existsSync, readFileSync, statSync, writeFileSync } from "fs";
-import { join } from "path";
-import { isAbsolute, relative, resolve, sep } from "path";
-
 const MAX_BYTES = 400 * 1024;
+const MAX_MEMORY_LINES = 1000;
 
-/**
- * Registro de diagnóstico en un archivo de la carpeta del plugin. Las líneas se
- * escriben de forma SÍNCRONA: si algo se cuelga después, lo anterior queda en
- * disco y se puede ver hasta dónde llegó el plugin.
- */
+/** Operaciones limitadas al adaptador del vault; también funciona con la carpeta oculta del plugin. */
+export interface LogAdapter {
+  stat(path: string): Promise<{ size: number; type: string } | null>;
+  read(path: string): Promise<string>;
+  write(path: string, data: string): Promise<void>;
+  append(path: string, data: string): Promise<void>;
+}
+
+function logPath(configDir: string, pluginId: string): string | null {
+  const safeConfig = configDir.replace(/\\/g, "/").replace(/\/+$/g, "");
+  const parts = safeConfig.split("/");
+  if (!safeConfig || safeConfig.startsWith("/") || parts.some((part) => !part || part === "." || part === "..")) return null;
+  if (!/^[a-z0-9-]+$/i.test(pluginId)) return null;
+  return `${safeConfig}/plugins/${pluginId}/zotero-library.log`;
+}
+
+/** Registro acotado a la carpeta del plugin mediante el adaptador del vault. */
 export class Tracer {
+  private adapter: LogAdapter | null = null;
   private path: string | null = null;
   private t0 = Date.now();
+  private queue: Promise<void> = Promise.resolve();
+  private readonly lines: string[] = [];
 
-  /** `basePath`: carpeta del vault en disco; `dir`: carpeta del plugin dentro del vault. */
-  init(basePath: string | null | undefined, dir: string | undefined, version: string, platform = process.platform): void {
+  init(adapter: LogAdapter | null | undefined, configDir: string | undefined, pluginId: string, version: string, platform = process.platform): void {
     this.t0 = Date.now();
-    if (!basePath || !dir) return;
-    try {
-      const root = resolve(basePath);
-      const folder = resolve(root, dir);
-      const insideVault = relative(root, folder);
-      if (!insideVault || insideVault === ".." || insideVault.startsWith(`..${sep}`) || isAbsolute(insideVault)) return;
-      this.path = join(folder, "zotero-library.log");
-      // Si el archivo creció demasiado, se empieza de nuevo.
-      if (existsSync(this.path) && statSync(this.path).size > MAX_BYTES) writeFileSync(this.path, "");
-    } catch {
+    this.queue = Promise.resolve();
+    this.adapter = adapter ?? null;
+    this.path = configDir ? logPath(configDir, pluginId) : null;
+    if (!this.adapter || !this.path) {
+      this.adapter = null;
       this.path = null;
+    } else {
+      const logAdapter = this.adapter;
+      const path = this.path;
+      this.enqueue(async () => {
+        try {
+          const stat = await logAdapter.stat(path);
+          if (stat?.type === "file" && stat.size > MAX_BYTES) await logAdapter.write(path, "");
+        } catch {
+          // El diagnóstico nunca debe impedir que el plugin cargue.
+        }
+      });
     }
+
     const platformName = platform === "win32" ? "Windows" : platform === "darwin" ? "macOS" : platform === "linux" ? "Linux" : "otro";
     this.log(`=== Zotero Library ${version} · ${platformName} · Obsidian ===`);
   }
@@ -39,29 +57,47 @@ export class Tracer {
   log(message: string): void {
     const line = `${new Date().toISOString()} +${Date.now() - this.t0}ms ${message}`;
     console.debug("[zotero-library]", message);
-    if (!this.path) return;
-    try {
-      appendFileSync(this.path, `${line}\n`);
-    } catch {
-      /* el registro nunca debe romper el plugin */
-    }
+    this.lines.push(line);
+    if (this.lines.length > MAX_MEMORY_LINES) this.lines.splice(0, this.lines.length - MAX_MEMORY_LINES);
+    const adapter = this.adapter;
+    const path = this.path;
+    if (!adapter || !path) return;
+    this.enqueue(async () => {
+      try {
+        const stat = await adapter.stat(path);
+        if (!stat) await adapter.write(path, `${line}\n`);
+        else {
+          if (stat.type !== "file") throw new Error("La ruta del registro no es un archivo.");
+          if (stat.size > MAX_BYTES) await adapter.write(path, "");
+          await adapter.append(path, `${line}\n`);
+        }
+      } catch {
+        // El registro nunca debe romper el plugin.
+      }
+    });
   }
 
-  error(where: string, e: unknown): void {
-    const err = e as Error | undefined;
-    const name = err?.name || "Error";
-    const message = err?.message || String(e);
+  private enqueue(operation: () => Promise<void>): void {
+    this.queue = this.queue.then(operation, operation).catch(() => undefined);
+  }
+
+  error(where: string, error: unknown): void {
+    const name = error instanceof Error ? error.name : "Error";
+    const message = error instanceof Error ? error.message : String(error);
     this.log(`ERROR en ${where}: ${name}: ${redactLocalPaths(message)}`);
   }
 
-  /** Últimas líneas del registro (para mostrarlas dentro de Obsidian). */
-  tail(lines = 200): string {
-    if (!this.path || !existsSync(this.path)) return "(no hay registro)";
-    try {
-      return readFileSync(this.path, "utf8").split("\n").slice(-lines).join("\n");
-    } catch {
-      return "(no se pudo leer el registro)";
+  /** Espera el registro del vault; si no está disponible, usa el búfer de esta sesión. */
+  async tail(lines = 200): Promise<string> {
+    await this.queue;
+    if (this.adapter && this.path) {
+      try {
+        return (await this.adapter.read(this.path)).split("\n").slice(-lines).join("\n");
+      } catch {
+        // Se conserva el búfer en memoria para que el comando de diagnóstico siga disponible.
+      }
     }
+    return this.lines.slice(-lines).join("\n") || "(no hay registro)";
   }
 }
 

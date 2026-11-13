@@ -63,7 +63,7 @@ export class TemplateEngine {
   private readonly loader: { cache?: Record<string, unknown> };
 
   constructor(private readonly opts: EngineOptions) {
-    this.templates = opts.templates ?? new Map();
+    this.templates = opts.templates ?? new Map<string, string>();
     const lookup = (name: string): string | undefined => {
       const clean = name.replace(/^\.?\//, "");
       return this.templates.get(clean) ?? this.templates.get(`${clean}.md`) ?? this.templates.get(`${clean}.njk`);
@@ -100,9 +100,10 @@ export class TemplateEngine {
     // {{ annotations | filterby("date", "dateafter", lastImportDate) }}
     this.env.addFilter("filterby", (list: unknown, prop: string, comparison: string, value: unknown) => {
       if (!Array.isArray(list)) return [];
+      const entries: unknown[] = list;
       const cmp = String(comparison).toLowerCase();
       const needle = String(value ?? "").toLowerCase();
-      return list.filter((entry) => {
+      return entries.filter((entry) => {
         const v = (entry as Record<string, unknown>)?.[prop];
         switch (cmp) {
           case "contains":
@@ -133,7 +134,9 @@ export class TemplateEngine {
         if (this.compiled.size >= 200) this.compiled.clear();
         this.compiled.set(source, tpl);
       }
-      return tpl.render(templateData(context) as Record<string, unknown>);
+      const rendered: unknown = tpl.render(templateData(context) as Record<string, unknown>);
+      if (typeof rendered !== "string") throw new TypeError("La plantilla no devolvió texto.");
+      return rendered;
     } catch (e) {
       throw new TemplateError((e as Error).message, name);
     }
