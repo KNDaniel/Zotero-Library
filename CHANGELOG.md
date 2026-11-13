@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.9.10 — remediación de advertencias de revisión
+
+- Endurece los límites de lectura de archivos externos de Zotero y valida rutas canónicas antes de consultar o copiar imágenes.
+- Valida campo por campo el estado de vista persistido y fortalece las comprobaciones de tipos de las APIs dinámicas de Electron y Obsidian.
+- Elimina aserciones/importaciones redundantes y retira `display: contents` del diseño responsive sin cambiar el flujo de paneles.
+- Aclara que el portapapeles solo se escribe al copiar y que las plantillas Nunjucks deben ser de confianza.
+
 ## 0.9.9 — remediación de advertencias y límites de acceso
 
 - Guarda el registro mediante el adaptador del vault y limita las comprobaciones de disco a la ruta real de datos de Zotero.

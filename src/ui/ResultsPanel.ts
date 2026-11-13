@@ -238,7 +238,7 @@ export class ResultsPanel {
   private clearMarks(): void {
     const mode = this.host.state().mode;
     this.host.setMarks(mode === "item" ? { markedItems: [] } : { markedAnnotations: [] });
-    for (const card of Array.from(this.body.querySelectorAll(`.zl-card.is-marked[data-kind="${mode}"]`)) as HTMLElement[]) this.paintMark(card, false);
+    for (const card of this.body.querySelectorAll<HTMLElement>(`.zl-card.is-marked[data-kind="${mode}"]`)) this.paintMark(card, false);
     this.refreshMarks();
   }
 
@@ -258,7 +258,7 @@ export class ResultsPanel {
     insert?.setAttribute("title", `Inserta ${what} en el cursor de la nota activa`);
     note?.setAttribute("title", `Crea una nota con ${what}`);
     // Un grupo plegado esconde sus marcas: su encabezado cuenta las que tiene.
-    for (const wrap of Array.from(this.body.querySelectorAll(".zl-group-wrap")) as HTMLElement[]) {
+    for (const wrap of this.body.querySelectorAll<HTMLElement>(".zl-group-wrap")) {
       const n = wrap.querySelectorAll(".zl-card.is-marked").length;
       wrap.querySelector(".zl-group")?.setAttribute("data-marked", n ? ` · ${plural(n)}` : "");
     }

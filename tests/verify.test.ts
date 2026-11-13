@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { relative, resolve } from "node:path";
 import { LibraryIndex } from "../src/index/LibraryIndex";
 import type { HttpClient } from "../src/source/http";
 import { LocalApiSource } from "../src/source/LocalApiSource";
@@ -128,6 +129,8 @@ describe("informe de verificación", () => {
         if (path === "/z/cache") throw new Error("EACCES: acceso denegado");
         return [];
       },
+      async (path) => path,
+      "/z",
     );
     const checks = await runVerification({ source, index: library(ok), fs, dataDir: "/z" });
     const files = checks.find((c) => c.id === "files")!;
@@ -143,6 +146,8 @@ describe("informe de verificación", () => {
         throw new Error("ENOENT: no existe");
       },
       async () => [],
+      async (path) => path,
+      "/z",
     );
     const checks = await runVerification({ source, index: library(ok), fs, dataDir: "/z" });
     const files = checks.find((c) => c.id === "files")!;
@@ -163,6 +168,52 @@ describe("informe de verificación", () => {
     await expect(fs.readdir("/z/cache")).rejects.toThrow("fuera de la carpeta");
     expect(accessed).toEqual([]);
     expect(listed).toEqual([]);
+  });
+
+  it("no consulta ninguna ruta si falta una raíz autorizada", async () => {
+    const accessed: string[] = [];
+    const listed: string[] = [];
+    const fs = createNodeFs(
+      async (path) => { accessed.push(path); },
+      async (path) => { listed.push(path); return []; },
+      async (path) => path,
+    );
+    expect(await fs.exists("/private/secret")).toBe(false);
+    await expect(fs.readdir("/private/secret")).rejects.toThrow("raíz absoluta autorizada");
+    expect(accessed).toEqual([]);
+    expect(listed).toEqual([]);
+  });
+
+  it("no consulta una ruta fuera de la raíz aunque sea absoluta", async () => {
+    const accessed: string[] = [];
+    const fs = createNodeFs(
+      async (path) => { accessed.push(path); },
+      async () => [],
+      async (path) => path,
+      "/zotero",
+    );
+    expect(await fs.exists("/private/secret")).toBe(false);
+    expect(accessed).toEqual([]);
+  });
+
+  it("usa las rutas canónicas devueltas por realpath para cada operación", async () => {
+    const accessed: string[] = [];
+    const listed: string[] = [];
+    const root = resolve("zotero-test-root");
+    const canonicalRoot = resolve("canonical-zotero-test-root");
+    const canonical = (path: string) => path === root ? canonicalRoot : resolve(canonicalRoot, relative(root, path));
+    const fs = createNodeFs(
+      async (path) => { accessed.push(path); },
+      async (path) => { listed.push(path); return []; },
+      async (path) => canonical(path),
+      root,
+    );
+    const storage = resolve(root, "storage");
+    const cache = resolve(root, "cache");
+    expect(await fs.exists(storage)).toBe(true);
+    await fs.readdir(cache);
+    expect(accessed).toEqual([canonical(storage)]);
+    expect(listed).toEqual([canonical(cache)]);
   });
 
   it("limita a ocho las comprobaciones concurrentes de PNG y conserva los recuentos", async () => {

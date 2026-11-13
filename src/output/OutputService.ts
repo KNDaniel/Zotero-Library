@@ -11,6 +11,7 @@ import { noteBaseName, uniqueNotePath } from "./noteName";
 import { copyImages, describeImages, type ImageIO } from "./images";
 import type { LocalApiSource } from "../source/LocalApiSource";
 import { writeClipboardText } from "../clipboard";
+import { isZoteroLibraryCacheImagePath } from "../zoteroImagePaths";
 
 export type OutputAction = "copy" | "insert" | "note";
 
@@ -29,10 +30,12 @@ const stamp = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-$
 
 function isEditableMarkdownView(view: unknown, path: string): view is Pick<MarkdownView, "file" | "editor"> {
   if (!view || typeof view !== "object") return false;
-  const file = Reflect.get(view, "file");
-  const editor = Reflect.get(view, "editor");
-  return !!file && typeof file === "object" && Reflect.get(file, "path") === path
-    && !!editor && typeof editor === "object" && typeof Reflect.get(editor, "replaceSelection") === "function";
+  const file: unknown = Reflect.get(view, "file");
+  const editor: unknown = Reflect.get(view, "editor");
+  if (!file || typeof file !== "object" || !editor || typeof editor !== "object") return false;
+  const filePath: unknown = Reflect.get(file, "path");
+  const replaceSelection: unknown = Reflect.get(editor, "replaceSelection");
+  return filePath === path && typeof replaceSelection === "function";
 }
 
 /** Copiar al portapapeles, insertar en la nota activa o crear una nota nueva con el resultado. */
@@ -129,12 +132,31 @@ export class OutputService {
 
   private imageIO(): ImageIO {
     const { vault } = this.host.app;
+    const { zoteroDataDir } = this.host.settings;
+    const checkedRealPath = async (path: string): Promise<string> => {
+      if (!isZoteroLibraryCacheImagePath(path, zoteroDataDir)) {
+        throw new Error("La ruta de origen de imagen no pertenece a cache/library de Zotero.");
+      }
+      const [realDataDir, realPath] = await Promise.all([fsp.realpath(zoteroDataDir), fsp.realpath(path)]);
+      if (!isZoteroLibraryCacheImagePath(realPath, realDataDir)) {
+        throw new Error("La ruta resuelta de imagen queda fuera de cache/library de Zotero.");
+      }
+      return realPath;
+    };
     return {
       vaultExists: (p) => vault.adapter.exists(normalizePath(p)),
-      diskExists: (p) => fsp.access(p).then(() => true, () => false),
-      realpath: (p) => fsp.realpath(p),
+      diskExists: async (p) => {
+        try {
+          await checkedRealPath(p);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      realpath: checkedRealPath,
       readDisk: async (p) => {
-        const b = await fsp.readFile(p);
+        const realPath = await checkedRealPath(p);
+        const b = await fsp.readFile(realPath);
         return Uint8Array.from(b).buffer;
       },
       ensureFolder: (p) => this.ensureFolder(p),

@@ -334,6 +334,8 @@ export class ZoteroLibraryView extends ItemView {
       if (!el) continue;
       el.toggleClass("is-active-panel", key === panel);
     }
+    this.items?.el.parentElement?.toggleClass("is-active-panel", panel === "items" || panel === "tags");
+    this.results?.el.parentElement?.toggleClass("is-active-panel", panel === "results");
     // Al estar ocultas con display:none las listas virtuales se dibujaron con su altura de reserva.
     if (panel === "items") this.items?.refreshViewport();
     if (panel === "tags") this.tags?.refreshViewport();
