@@ -30,17 +30,17 @@ El último paso crea `dist/zotero-library-<versión>/` con solo `main.js`, `mani
 - [x] Prueba en Obsidian: el candidato abrió desde el mock, mostró estado «Sincronizado», la búsqueda `Capital` encontró dos ítems, se seleccionó uno y se renderizó su vista previa de salida. `smoke-output` verifica aparte la acción de crear nota. Se usó solo `vault-pruebas-fase4` y datos sintéticos.
 - [x] El directorio candidato contiene solo los tres archivos de instalación; la bóveda de aceptación está fuera de él.
 - [x] Piloto local de instalación, actualización, reinstalación y primer arranque completado con datos sintéticos.
-- [ ] Adjunta por separado `main.js`, `manifest.json` y `styles.css` al release `0.9.7`. La etiqueta debe ser exactamente `0.9.7` (sin prefijo `v`).
-- [ ] Comprueba la revisión automática del directorio para manifiesto, artefactos, código fuente y verificación del build.
+- [x] Publica `main.js`, `manifest.json` y `styles.css` en el release [0.9.7](https://github.com/KNDaniel/Zotero-Library/releases/tag/0.9.7), con etiqueta exacta `0.9.7` (sin prefijo `v`).
+- [x] CI del tag `0.9.7`: matriz Windows/macOS/Linux, build reproducible, verificación del candidato y atestación de artefactos aprobados.
 
 La verificación automática valida SemVer estable `x.y.z`, la igualdad de versiones, las condiciones básicas del manifiesto y la lista exacta de archivos permitidos. La presencia de `LICENSE` no determina que su texto sea legalmente adecuado ni que GitHub vaya a clasificarlo correctamente; el titular debe comprobarlo.
 
 ## Estado actual
 
-- Candidato instalable de `0.9.7`: preparado y verificado desde el build; pendiente de publicar el release.
+- Release `0.9.7`: publicado en GitHub con los tres artefactos requeridos; CI del tag y atestación aprobados.
 - README, changelog y captura: preparados; la captura usa los datos que el titular autorizó como no sensibles.
 - Licencia: MIT, elegida por el titular; la puerta de publicación ya no depende de esta decisión.
-- Para `0.9.7`: 445 pruebas automatizadas, build, cinco smoke y verificación del candidato pasaron el 12-nov-2026.
+- Para `0.9.7`: 448 pruebas automatizadas, build, cinco smoke y verificación del candidato pasaron localmente; CI del tag confirmó la matriz multiplataforma y la atestación.
 - Prueba visual en Obsidian de `0.9.6`: completada en `vault-pruebas-fase4`; las pruebas automatizadas del bundle `0.9.7` no sustituyen una prueba manual de instalación de esta versión.
 - Piloto local de Fase 5: completado; no participaron usuarios externos. El informe registra alcance, resultados y límites.
 - Dirección de soporte: `https://github.com/KNDaniel/zotero-library/issues`.
