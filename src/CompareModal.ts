@@ -78,7 +78,7 @@ export class CompareModal extends Modal {
       .setName("Nota a comparar")
       .setDesc("Por defecto, la nota activa. Si lo dejas vacío al comparar, se usa la nota activa en ese momento.")
       .addText((t) => {
-        t.inputEl.style.width = "100%";
+        t.inputEl.classList.add("zl-input");
         this.noteInput = t.inputEl;
         t.setValue(this.state.notePath).onChange((v) => (this.state.notePath = v.trim()));
       })
@@ -100,8 +100,7 @@ export class CompareModal extends Modal {
         }),
       );
     this.out = contentEl.createEl("pre");
-    this.out.style.whiteSpace = "pre-wrap";
-    this.out.style.userSelect = "text";
+    this.out.classList.add("zl-compare-output");
   }
 
   private async run(): Promise<void> {

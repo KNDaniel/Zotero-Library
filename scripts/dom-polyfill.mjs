@@ -27,6 +27,8 @@ export function installDom() {
   proto.removeClass = function (...c) { this.classList.remove(...c); };
   proto.toggleClass = function (c, v) { for (const k of Array.isArray(c) ? c : [c]) this.classList.toggle(k, v); };
   proto.setText = function (t) { this.textContent = t; };
+  proto.setCssStyles = function (styles) { Object.assign(this.style, styles); };
+  proto.setCssProps = function (props) { for (const [key, value] of Object.entries(props)) this.style.setProperty(key, value); };
   return window;
 }
 

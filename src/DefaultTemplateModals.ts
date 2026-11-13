@@ -38,7 +38,7 @@ export class ConfirmReplaceModal extends Modal {
     this.titleEl.setText("La nota ya existe");
     this.contentEl.createEl("p", { text: `Ya hay una nota «${this.path}». ¿Quieres reemplazar su contenido por la plantilla por defecto? Se perderán los cambios que le hayas hecho.` });
     new Setting(this.contentEl)
-      .addButton((b) => b.setButtonText("Reemplazar").setWarning().onClick(() => {
+      .addButton((b) => b.setButtonText("Reemplazar").setDestructive().onClick(() => {
         this.close();
         this.onConfirm();
       }))

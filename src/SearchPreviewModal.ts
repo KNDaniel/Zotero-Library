@@ -33,7 +33,7 @@ export class SearchPreviewModal extends Modal {
     });
 
     new Setting(contentEl).setName("Búsqueda").addText((t) => {
-      t.inputEl.style.width = "100%";
+      t.inputEl.classList.add("zl-input");
       t.setPlaceholder("@autor: Marx | ideología | @año: XIX").onChange((v) => {
         this.text = v;
         this.schedule();

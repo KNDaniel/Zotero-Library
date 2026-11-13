@@ -38,8 +38,7 @@ export class ReportModal extends Modal {
     const area = contentEl.createEl("textarea", { text: this.markdown });
     area.readOnly = true;
     area.rows = 18;
-    area.style.width = "100%";
-    area.style.fontFamily = "var(--font-monospace)";
+    area.classList.add("zl-report-area");
   }
 
   onClose(): void {
