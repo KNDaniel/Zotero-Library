@@ -50,16 +50,21 @@ export function attachmentChoices(index: LibraryIndex, item: ZoteroItem, dataDir
  * Con varios adjuntos, «Abrir…» lleva un submenú con sus nombres; sin archivo local, lo local queda desactivado.
  */
 export function buildItemMenu(choices: AttachmentChoice[], itemKey: string, deps: OpenDeps, platform = "linux"): MenuEntry[] {
-  const forEach = (title: string, pool: AttachmentChoice[], run: (a: AttachmentChoice) => void): MenuEntry => {
+  const forEach = <T extends AttachmentChoice>(title: string, pool: T[], run: (a: T) => void): MenuEntry => {
     if (pool.length === 0) return { title, disabled: true };
-    if (pool.length === 1) return { title, run: () => run(pool[0]!) };
+    if (pool.length === 1) {
+      const only = pool[0];
+      return only ? { title, run: () => run(only) } : { title, disabled: true };
+    }
     return { title, submenu: pool.map((a) => ({ title: a.name, run: () => run(a) })) };
   };
-  const local = choices.filter((a) => a.path);
+  const local: Array<AttachmentChoice & { path: string }> = choices.flatMap((choice) =>
+    choice.path === null ? [] : [{ ...choice, path: choice.path }],
+  );
   return [
     forEach("Abrir en Zotero", choices, (a) => deps.openUrl(zoteroOpenFirstPageUri(a.key, a.pdf))),
     { title: "Encontrar en Zotero", run: () => deps.openUrl(zoteroSelectUri(itemKey)) },
-    forEach("Abrir local", local, (a) => deps.openPath(toNativePath(a.path!, platform))),
-    forEach("Encontrar local", local, (a) => deps.showInFolder(toNativePath(a.path!, platform))),
+    forEach("Abrir local", local, (a) => deps.openPath(toNativePath(a.path, platform))),
+    forEach("Encontrar local", local, (a) => deps.showInFolder(toNativePath(a.path, platform))),
   ];
 }

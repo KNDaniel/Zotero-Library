@@ -33,11 +33,13 @@ export const requests = [];
 export const collectionsList = collections;
 export const notices = [];
 
+class MockTFolder { constructor(path = "") { this.path = path; this.children = []; } }
+
 export function makeObsidian(extra = {}) {
   class Stub { constructor() {} }
   return {
     Plugin: class { constructor(app, manifest) { this.app = app; this.manifest = manifest; this.commands = {}; this.views = {}; this._data = {}; } addCommand(c) { this.commands[c.id] = c; } addSettingTab() {} addRibbonIcon() {} registerView(t, f) { this.views[t] = f; } registerInterval(id) { return id; } registerDomEvent() {} async loadData() { return this._data; } async saveData(d) { this._data = d; } },
-    PluginSettingTab: Stub, Setting: Stub, Modal: Stub, FuzzySuggestModal: Stub, TFolder: class {}, AbstractInputSuggest: Stub, ItemView: class {
+    PluginSettingTab: Stub, Setting: Stub, Modal: Stub, FuzzySuggestModal: Stub, TFolder: MockTFolder, AbstractInputSuggest: Stub, ItemView: class {
       constructor(leaf) { this.leaf = leaf; this.app = leaf.app; this.containerEl = document.createElement("div"); this.contentEl = document.createElement("div"); this.containerEl.appendChild(this.contentEl); }
       // Protocolo real: Obsidian llama a view.open(parentEl); la base adjunta el contenedor y llama a onOpen().
       async open(parentEl) { parentEl.appendChild(this.containerEl); await this.onOpen(); }
@@ -68,5 +70,20 @@ export function makeObsidian(extra = {}) {
 
 export function appWith(files, active = null) {
   const cache = new Map();
-  return { vault: { adapter: { exists: async (p) => cache.has(p), readBinary: async (p) => cache.get(p), writeBinary: async (p, b) => cache.set(p, b), remove: async (p) => cache.delete(p) }, getFiles: () => files.map((f) => f.file), cachedRead: async (f) => files.find((x) => x.file === f).content, getAbstractFileByPath: () => null, getAllLoadedFiles: () => [] }, workspace: { getActiveFile: () => active, getLastOpenFiles: () => [], getLeavesOfType: () => [], getLeaf: () => ({}), revealLeaf() {}, openLinkText() {} } };
+  const root = new MockTFolder();
+  const entries = new Map([["", root]]);
+  for (const { file } of files) {
+    const parts = file.path.split("/");
+    let parent = root;
+    let path = "";
+    for (const part of parts.slice(0, -1)) {
+      path = path ? `${path}/${part}` : part;
+      let folder = entries.get(path);
+      if (!folder) { folder = new MockTFolder(path); entries.set(path, folder); parent.children.push(folder); }
+      parent = folder;
+    }
+    entries.set(file.path, file);
+    parent.children.push(file);
+  }
+  return { vault: { adapter: { exists: async (p) => cache.has(p), readBinary: async (p) => cache.get(p), writeBinary: async (p, b) => cache.set(p, b), remove: async (p) => cache.delete(p) }, getRoot: () => root, getFiles: () => files.map((f) => f.file), cachedRead: async (f) => files.find((x) => x.file === f).content, getAbstractFileByPath: (p) => entries.get(p) ?? null, getAllLoadedFiles: () => [] }, workspace: { getActiveFile: () => active, getLastOpenFiles: () => [], getLeavesOfType: () => [], getLeaf: () => ({}), revealLeaf() {}, openLinkText() {} } };
 }

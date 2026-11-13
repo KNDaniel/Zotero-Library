@@ -1,4 +1,5 @@
 import { isAbsolute } from "node:path";
+import { hasControlCharacters } from "../vaultPaths";
 import type { LibraryIndex } from "../index/LibraryIndex";
 import { IMAGE_NAME_STRATEGIES, imageBaseName, imageParts } from "../model/imageName";
 import { relatedItemKeys } from "../model/normalize";
@@ -313,7 +314,7 @@ export async function runVerification(opts: VerifyOptions): Promise<Check[]> {
       for (const a of files) {
         // Zotero API metadata is external input. Restrict both path components
         // before asking the filesystem whether an attachment exists.
-        if (!/^[A-Z0-9]{8}$/.test(a.key) || !a.filename || /[\\/\u0000-\u001f]/.test(a.filename) || a.filename === "." || a.filename === "..") {
+        if (!/^[A-Z0-9]{8}$/.test(a.key) || !a.filename || a.filename.includes("/") || a.filename.includes("\\") || hasControlCharacters(a.filename) || a.filename === "." || a.filename === "..") {
           unsafe++;
           continue;
         }

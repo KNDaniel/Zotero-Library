@@ -1,6 +1,6 @@
 import { createWatchdog } from "./watchdog";
 import { promises as fsp } from "fs";
-import { Menu, Notice, Platform, Plugin, TFile, moment, normalizePath } from "obsidian";
+import { Menu, Notice, Platform, Plugin, TFile, TFolder, moment, normalizePath } from "obsidian";
 import { attachmentChoices, buildItemMenu, type MenuEntry, type OpenDeps } from "./services/itemActions";
 import { trace } from "./log";
 import { mergeChanges, packCache, unpackCache } from "./index/cache";
@@ -8,7 +8,7 @@ import { LibraryIndex } from "./index/LibraryIndex";
 import { obsidianHttp } from "./obsidianHttp";
 import { ReportModal } from "./ReportModal";
 import { SearchPreviewModal } from "./SearchPreviewModal";
-import { defaultSettings, type ZoteroLibrarySettings } from "./settings";
+import { mergeStoredSettings, type ZoteroLibrarySettings } from "./settings";
 import { ZoteroConnectionError } from "./source/http";
 import { nodeHttp } from "./nodeHttp";
 import { CompareModal } from "./CompareModal";
@@ -23,7 +23,7 @@ import type { DefaultTemplateEntry } from "./template/defaultNotes";
 import type { CopyKind, ExplorerSource, ExplorerStart } from "./ui/explorer";
 import { itemLabel } from "./ui/ItemsPanel";
 import { TemplateEngine, type MomentFn } from "./template/engine";
-import { buildTemplateMap, isTemplatePath, listTemplates, relativeToFolder } from "./template/manager";
+import { buildTemplateMap, isTemplatePath, listTemplatesInTree, type TemplatePathNode } from "./template/manager";
 import { VIEW_TYPE, ZoteroLibraryView } from "./ui/ZoteroLibraryView";
 import { ZoteroLibrarySettingTab } from "./settings/SettingTab";
 import { OutputService, type OutputAction } from "./output/OutputService";
@@ -41,8 +41,6 @@ const TRANSPORTS: Transport[] = [
   { name: "Node http", http: nodeHttp },
 ];
 
-const nodeFs: FsLike = createNodeFs((p) => fsp.access(p), (p) => fsp.readdir(p));
-
 export default class ZoteroLibraryPlugin extends Plugin {
   settings!: ZoteroLibrarySettings;
   /** Índice en memoria; null hasta que se carga la biblioteca */
@@ -54,10 +52,10 @@ export default class ZoteroLibraryPlugin extends Plugin {
   cacheInfo: { savedAt: number; ms: number } | null = null;
 
   async onload(): Promise<void> {
-    this.settings = Object.assign(defaultSettings(), await this.loadData());
-    const adapter = this.app.vault.adapter as { getBasePath?: () => string } | undefined;
+    const storedSettings: unknown = await this.loadData();
+    this.settings = mergeStoredSettings(storedSettings);
     const platform: NodeJS.Platform = Platform.isWin ? "win32" : Platform.isMacOS ? "darwin" : Platform.isLinux ? "linux" : process.platform;
-    trace.init(typeof adapter?.getBasePath === "function" ? adapter.getBasePath() : null, this.manifest.dir, this.manifest.version, platform);
+    trace.init(this.app.vault.adapter, this.app.vault.configDir, this.manifest.id, this.manifest.version, platform);
     trace.log("onload: ajustes cargados");
     this.installWatchdog();
     this.addSettingTab(new ZoteroLibrarySettingTab(this.app, this));
@@ -85,7 +83,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
     this.addCommand({
       id: "show-log",
       name: "Mostrar el registro de diagnóstico",
-      callback: () => new ReportModal(this.app, `Archivo: ${trace.file ?? "(sin registro en disco)"}\n\n${trace.tail(300)}`, null, "Registro de Zotero Library").open(),
+      callback: () => { void trace.tail(300).then((text) => new ReportModal(this.app, `Archivo: ${trace.file ?? "(solo memoria)"}\n\n${text}`, null, "Registro de Zotero Library").open()); },
     });
 
     this.addCommand({
@@ -181,7 +179,18 @@ export default class ZoteroLibraryPlugin extends Plugin {
   private openDeps(): OpenDeps {
     const shell = (): { openPath(p: string): Promise<string>; showItemInFolder(p: string): void } | null => {
       try {
-        return ((window as unknown as { require?: (m: string) => { shell?: never } }).require?.("electron")?.shell ?? null) as never;
+        const requireElectron = (window as unknown as { require?: (moduleName: string) => unknown }).require;
+        const electron = requireElectron?.("electron");
+        if (!electron || typeof electron !== "object") return null;
+        const candidate = Reflect.get(electron, "shell");
+        if (!candidate || typeof candidate !== "object") return null;
+        const openPath = Reflect.get(candidate, "openPath");
+        const showItemInFolder = Reflect.get(candidate, "showItemInFolder");
+        if (typeof openPath !== "function" || typeof showItemInFolder !== "function") return null;
+        return {
+          openPath: (path) => Reflect.apply(openPath, candidate, [path]) as Promise<string>,
+          showItemInFolder: (path) => { Reflect.apply(showItemInFolder, candidate, [path]); },
+        };
       } catch {
         return null;
       }
@@ -442,7 +451,10 @@ export default class ZoteroLibraryPlugin extends Plugin {
 
   /** Rutas relativas de las plantillas de la carpeta configurada. */
   templatePaths(): string[] {
-    return listTemplates(this.app.vault.getFiles().map((f) => f.path), this.settings.templatesFolder);
+    const folder = this.settings.templatesFolder;
+    const root = folder ? this.app.vault.getAbstractFileByPath(folder) : this.app.vault.getRoot();
+    if (!(root instanceof TFolder)) return [];
+    return listTemplatesInTree(root as TemplatePathNode, folder);
   }
 
   /** Crea el motor con las plantillas actuales de la carpeta (para {% include %}). */
@@ -451,7 +463,11 @@ export default class ZoteroLibraryPlugin extends Plugin {
 
   async createEngine(): Promise<{ engine: TemplateEngine; templates: Map<string, string> }> {
     const folder = this.settings.templatesFolder;
-    const files = this.app.vault.getFiles().filter((f) => isTemplatePath(f.path) && relativeToFolder(f.path, folder) !== null);
+    const root = folder ? this.app.vault.getAbstractFileByPath(folder) : this.app.vault.getRoot();
+    const paths = root instanceof TFolder ? listTemplatesInTree(root as TemplatePathNode, folder) : [];
+    const files = paths
+      .map((path) => this.app.vault.getAbstractFileByPath(folder ? `${folder}/${path}` : path))
+      .filter((file): file is TFile => file instanceof TFile && isTemplatePath(file.path));
     const contents = await Promise.all(files.map(async (f) => ({ path: f.path, content: await this.app.vault.cachedRead(f) })));
     const signature = `${folder}\u0000${contents.map((c) => `${c.path}\u0001${c.content}`).join("\u0000")}`;
     if (this.engineCache?.signature === signature) return { engine: this.engineCache.engine, templates: this.engineCache.templates };
@@ -614,7 +630,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
       const checks = await runVerification({
         source: this.createSource(),
         index,
-        fs: nodeFs,
+        fs: createNodeFs((p) => fsp.access(p), (p) => fsp.readdir(p), (p) => fsp.realpath(p), this.settings.zoteroDataDir),
         dataDir: this.settings.zoteroDataDir,
         session: this.session,
       });

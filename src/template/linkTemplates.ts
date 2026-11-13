@@ -15,7 +15,7 @@ export const LINK_TEMPLATE_PREFIX = "builtin:";
 
 const TITLE = String.raw`{{ title | replace("[", "\\[") | replace("]", "\\]") }}`;
 
-export const LINK_TEMPLATES: LinkTemplate[] = [
+export const LINK_TEMPLATES: [LinkTemplate, ...LinkTemplate[]] = [
   { id: "title-select", label: "Título → seleccionar", item: `[${TITLE}]({{ select }})`, annotation: `[${TITLE}]({{ select }})` },
   { id: "title-open", label: "Título → abrir", item: `[${TITLE}]({{ openURI }})`, annotation: `[${TITLE}]({{ annotation.desktopURI }})` },
   { id: "only-select", label: "Solo select", item: "[select]({{ select }})", annotation: "[select]({{ select }})" },
@@ -31,4 +31,4 @@ export function linkTemplateById(value: string): LinkTemplate | undefined {
 }
 
 /** La plantilla incluida por defecto de esta salida. */
-export const DEFAULT_LINK_TEMPLATE = LINK_TEMPLATES[0]!;
+export const DEFAULT_LINK_TEMPLATE = LINK_TEMPLATES[0];

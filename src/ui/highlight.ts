@@ -63,7 +63,9 @@ export function highlightTerms(root: HTMLElement, terms: string[]): number {
     let pos = 0;
     for (const [a, b] of ranges) {
       if (a > pos) frag.appendChild(doc.createTextNode(text.slice(pos, a)));
-      const mark = doc.createElement("mark");
+      const markFragment = doc.createRange().createContextualFragment("<mark></mark>");
+      const mark = markFragment.firstElementChild;
+      if (!mark) continue;
       mark.className = "zl-hit";
       mark.textContent = text.slice(a, b);
       frag.appendChild(mark);

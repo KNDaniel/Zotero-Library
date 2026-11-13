@@ -1,6 +1,6 @@
 # Zotero Library para Obsidian
 
-Plugin de escritorio para explorar una biblioteca de Zotero desde Obsidian, filtrar ítems y anotaciones, y generar notas o texto mediante plantillas Nunjucks. Versión actual del proyecto: **0.9.7**.
+Plugin de escritorio para explorar una biblioteca de Zotero desde Obsidian, filtrar ítems y anotaciones, y generar notas o texto mediante plantillas Nunjucks. Versión actual del proyecto: **0.9.9**.
 
 ## Funciones
 
@@ -11,7 +11,7 @@ Plugin de escritorio para explorar una biblioteca de Zotero desde Obsidian, filt
 - Copia opcional de imágenes de anotaciones al vault y caché local comprimida de la biblioteca.
 - Explorador de variables de plantilla e informe de diagnóstico.
 
-El plugin hace solicitudes de lectura a la **API local de Zotero**, cuyo acceso permite leer la biblioteca local mientras Zotero esté abierto. La URL predeterminada apunta a loopback. Para usar otro host, activa **Permitir servidor remoto**; los servidores remotos deben usar HTTPS y recibirán las solicitudes y parámetros consultados (por ejemplo, la ruta de biblioteca y claves seleccionadas). El plugin no envía la biblioteca local ni usa un servicio del proyecto. Configura únicamente un host de confianza. También lee, fuera del vault, archivos de la carpeta de datos de Zotero para localizar adjuntos e imágenes, y puede copiar PNG referenciados al vault si la opción está activada. La caché opcional contiene datos de la biblioteca y se guarda en la carpeta del plugin dentro de `.obsidian`. Revisa el registro antes de compartirlo: puede contener claves de anotación y mensajes de error.
+El plugin hace solicitudes de lectura a la **API local de Zotero**, cuyo acceso permite leer la biblioteca local mientras Zotero esté abierto. La URL predeterminada apunta a loopback. Para usar otro host, activa **Permitir servidor remoto**; los servidores remotos deben usar HTTPS y recibirán las solicitudes y parámetros consultados (por ejemplo, la ruta de biblioteca y claves seleccionadas). El plugin no envía la biblioteca local ni usa un servicio del proyecto. Configura únicamente un host de confianza. También lee, fuera del vault, archivos de la carpeta de datos de Zotero para localizar adjuntos e imágenes, y puede copiar PNG referenciados al vault si la opción está activada. La caché opcional contiene datos de la biblioteca y se guarda en la carpeta del plugin dentro de `.obsidian`. El plugin no lee el portapapeles: solo escribe en él cuando eliges «Copiar». Revisa el registro antes de compartirlo: puede contener claves de anotación y mensajes de error.
 
 ## Instalación manual
 

@@ -4,7 +4,7 @@
 
 Requiere Node.js y pnpm compatibles con las versiones de `package.json` y `pnpm-lock.yaml`.
 
-Entorno de la línea base del 12-nov-2026: Node.js `v26.13.1`, fijado en `.nvmrc`, y pnpm `12.18.0`, fijado en `package.json` mediante `packageManager`. La instalación congelada, `pnpm run check`, build y cinco smoke pasaron con esas versiones. No se declara por ello que sean las únicas versiones compatibles.
+Entorno de la línea base del 12-nov-2026: Node.js `v26.13.1`, fijado en `.nvmrc`, y pnpm `12.18.0`, fijado en `package.json` mediante `packageManager`. Para 0.9.9, typecheck, Vitest, build y cinco smoke pasaron en Windows; el build reproduce el bundle a partir del código fuente. No se declara por ello que sean las únicas versiones compatibles.
 
 Integración comprobada el 12-nov-2026 en Windows: Obsidian `1.15.0` (instalador `1.14.5`) y Zotero `9.0.3`. `manifest.json` fija `minAppVersion: 1.15.0` como suelo conservador probado; versiones de Obsidian anteriores y macOS/Linux siguen sin verificar.
 
@@ -34,7 +34,7 @@ Cada smoke debe terminar con `RESULTADO` satisfactorio. Los adaptadores simulado
 Después de `pnpm run build`, `pnpm run release:prepare` copia el paquete a `dist/zotero-library-<versión>/` y verifica que contenga exclusivamente `main.js`, `manifest.json` y `styles.css`, con versiones coherentes y metadatos compatibles con el directorio comunitario. Repite la verificación tras confirmar `LICENSE`:
 
 ```powershell
-pnpm run release:verify -- dist/zotero-library-0.9.6
+pnpm run release:verify -- dist/zotero-library-0.9.9
 ```
 
 El verificador de publicación requiere además README, changelog, avisos de dependencias y LICENSE en la raíz. No evalúa si la licencia es jurídicamente adecuada ni sustituye la revisión oficial del directorio. Pasos y checklist: [preparación de release](lista-release.md).
@@ -74,6 +74,8 @@ Flujo: API → modelo → índice/caché → filtros (`derive`) → paneles → 
 ## Plantillas y seguridad
 
 Nunjucks se ejecuta con `autoescape: false` para mantener compatibilidad HTML; no tiene sandbox. Trata las plantillas como código de confianza. Valida las rutas de imágenes mediante `src/vaultPaths.ts` y vuelve a validarlas justo antes de escribir en `src/output/images.ts`. Usa loopback para la API local salvo que exista una necesidad explícita de configurar otro host.
+
+Las plantillas se enumeran desde el árbol `TFolder` de la carpeta configurada, sin listar primero todos los archivos del vault. El diagnóstico escribe su registro con `Vault.adapter`; el acceso directo de Node al disco se conserva para comprobar adjuntos y leer PNG de la carpeta de datos de Zotero, validando cada ruta contra su raíz canónica.
 
 ## Entrega
 

@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.9.9 — remediación de advertencias y límites de acceso
+
+- Guarda el registro mediante el adaptador del vault y limita las comprobaciones de disco a la ruta real de datos de Zotero.
+- Enumera plantillas solo dentro de la carpeta configurada y valida los ajustes persistidos antes de usarlos.
+- Aclara que Nunjucks no ofrece sandbox y que las plantillas deben ser de confianza.
+- Corrige avisos de lint confirmados y elimina `!important` donde la especificidad conserva el comportamiento.
+
 ## 0.9.8 — compatibilidad con la revisión de Obsidian
 
 - Sustituye los estilos inline por clases CSS o por los helpers CSS de Obsidian.

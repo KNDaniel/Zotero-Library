@@ -15,11 +15,26 @@ class TFile { constructor(p) { this.path = p; this.name = p.split("/").pop(); th
 const files = new Map(); const folders = new Set(); const opened = [];
 const putFile = (p, content) => { const f = new TFile(p); files.set(p, { file: f, content }); return f; };
 putFile("Zotero Library/Plantillas/import.md", template);
+const buildTree = () => {
+  const root = new base.TFolder(); const entries = new Map([["", root]]);
+  for (const { file } of files.values()) {
+    const parts = file.path.split("/"); let parent = root; let current = "";
+    for (const part of parts.slice(0, -1)) {
+      current = current ? `${current}/${part}` : part;
+      let folder = entries.get(current);
+      if (!folder) { folder = new base.TFolder(current); entries.set(current, folder); parent.children.push(folder); }
+      parent = folder;
+    }
+    entries.set(file.path, file); parent.children.push(file);
+  }
+  return entries;
+};
 const vault = {
   adapter: { exists: async (p) => files.has(p) || folders.has(p), readBinary: async (p) => files.get(p).content, writeBinary: async (p, b) => void putFile(p, b), remove: async (p) => void files.delete(p) },
   getFiles: () => [...files.values()].map((f) => f.file),
   cachedRead: async (f) => files.get(f.path).content,
-  getAbstractFileByPath: (p) => files.get(p)?.file ?? null,
+  getRoot: () => buildTree().get(""),
+  getAbstractFileByPath: (p) => buildTree().get(p) ?? null,
   createFolder: async (p) => { if (folders.has(p)) throw new Error("Folder already exists"); folders.add(p); },
   create: async (p, text) => putFile(p, text),
   createBinary: async (p, data) => putFile(p, data),

@@ -1,5 +1,5 @@
 import { promises as fsp } from "fs";
-import { MarkdownView, TFile, normalizePath, type App } from "obsidian";
+import { TFile, normalizePath, type App, type MarkdownView } from "obsidian";
 import type { LibraryIndex } from "../index/LibraryIndex";
 import { trace } from "../log";
 import type { ZoteroLibrarySettings } from "../settings";
@@ -26,6 +26,14 @@ export interface OutputHost {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const stamp = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}${pad(d.getMinutes())}`;
+
+function isEditableMarkdownView(view: unknown, path: string): view is Pick<MarkdownView, "file" | "editor"> {
+  if (!view || typeof view !== "object") return false;
+  const file = Reflect.get(view, "file");
+  const editor = Reflect.get(view, "editor");
+  return !!file && typeof file === "object" && Reflect.get(file, "path") === path
+    && !!editor && typeof editor === "object" && typeof Reflect.get(editor, "replaceSelection") === "function";
+}
 
 /** Copiar al portapapeles, insertar en la nota activa o crear una nota nueva con el resultado. */
 export class OutputService {
@@ -85,8 +93,8 @@ export class OutputService {
     if (!(file instanceof TFile) || file.extension !== "md") {
       throw new Error("No hay ninguna nota abierta donde insertar. Abre una nota o usa «Nueva nota».");
     }
-    const leaf = app.workspace.getLeavesOfType("markdown").find((l) => (l.view as MarkdownView).file?.path === file.path);
-    const editor = (leaf?.view as MarkdownView | undefined)?.editor;
+    const leaf = app.workspace.getLeavesOfType("markdown").find((l) => isEditableMarkdownView(l.view, file.path));
+    const editor = leaf && isEditableMarkdownView(leaf.view, file.path) ? leaf.view.editor : undefined;
     if (editor) editor.replaceSelection(text);
     else await app.vault.append(file, `\n${text}`);
     return file.path;
@@ -127,7 +135,7 @@ export class OutputService {
       realpath: (p) => fsp.realpath(p),
       readDisk: async (p) => {
         const b = await fsp.readFile(p);
-        return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) as ArrayBuffer;
+        return Uint8Array.from(b).buffer;
       },
       ensureFolder: (p) => this.ensureFolder(p),
       writeVault: async (p, data) => void (await vault.createBinary(normalizePath(p), data)),

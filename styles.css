@@ -16,10 +16,8 @@
 }
 
 /* ===== 2. Base y controles ===== */
-.zl-view { padding: 0 !important; display: flex; flex-direction: column; height: 100%; container: zl / inline-size; }
+.zl-view { padding: 0; display: flex; flex-direction: column; height: 100%; container: zl / inline-size; }
 .zl-view input[type="checkbox"], .zl-float input[type="checkbox"] { width: var(--checkbox-size); height: var(--checkbox-size); flex: 0 0 auto; }
-/* «is-hidden» solo vale dentro de lo nuestro: no pisa a otros plugins ni a Obsidian */
-.zl-view .is-hidden, .zl-float.is-hidden, .zl-explorer-modal .is-hidden { display: none !important; }
 
 .zl-btn { padding: 2px 8px; height: auto; font-size: var(--font-ui-smaller); }
 .zl-seg { display: inline-flex; border: 1px solid var(--zl-border); border-radius: var(--radius-s); overflow: hidden; }
@@ -202,6 +200,10 @@ mark.zl-hit { background: var(--text-highlight-bg, #ffd40066); color: inherit; b
 .zl-ex-pick .zl-ex-head { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* El modal de Obsidian está por encima de los popovers: el desplegable del selector se sitúa sobre el modal */
 .zl-float.zl-float-explorer { z-index: calc(var(--layer-modal, 50) + 5); padding: 0; }
+
+/* Más específico que las reglas de panel activo; no se necesita !important. */
+.zl-view .is-hidden, .zl-float.is-hidden, .zl-explorer-modal .is-hidden { display: none; }
+.zl-view .zl-layout .zl-panel.is-hidden, .zl-view .zl-layout .zl-panel-tabs.is-hidden { display: none; }
 .zl-ex-pick-search { position: sticky; top: 0; width: 100%; margin: 0; border-radius: 0; }
 .zl-ex-pick-item { padding: 3px var(--zl-gap); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-ui-small); }
 .zl-ex-pick-item:hover { background: var(--zl-hover); }

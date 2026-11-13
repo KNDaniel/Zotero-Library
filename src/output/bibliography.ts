@@ -29,8 +29,7 @@ export function htmlToMarkdown(html: string): string {
 export function bibHtmlToEntries(html: string): string[] {
   const entries: string[] = [];
   const start = /<div\b[^>]*class="[^"]*\bcsl-entry\b[^"]*"[^>]*>/gi;
-  let m: RegExpExecArray | null;
-  while ((m = start.exec(html))) {
+  while (start.exec(html)) {
     let depth = 1;
     const tag = /<(\/?)div\b[^>]*>/gi;
     tag.lastIndex = start.lastIndex;

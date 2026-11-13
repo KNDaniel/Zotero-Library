@@ -110,7 +110,7 @@ function makeNode(path: PathSeg[], value: unknown): ExplorerNode {
 /** Raíz del árbol: las variables de primer nivel, ordenadas por nombre. */
 export function rootNodes(ctx: Record<string, unknown>): ExplorerNode[] {
   return Object.keys(ctx)
-    .sort(collator.compare)
+    .sort((a, b) => collator.compare(a, b))
     .map((k) => makeNode([k], ctx[k]));
 }
 
@@ -120,7 +120,7 @@ export function childNodes(node: ExplorerNode): ExplorerNode[] {
   if (node.kind === "object") {
     const o = node.value as Record<string, unknown>;
     return Object.keys(o)
-      .sort(collator.compare)
+      .sort((a, b) => collator.compare(a, b))
       .map((k) => makeNode([...node.path, k], o[k]));
   }
   return [];
