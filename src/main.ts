@@ -23,16 +23,17 @@ import type { DefaultTemplateEntry } from "./template/defaultNotes";
 import type { CopyKind, ExplorerSource, ExplorerStart } from "./ui/explorer";
 import { itemLabel } from "./ui/ItemsPanel";
 import { TemplateEngine, type MomentFn } from "./template/engine";
-import { buildTemplateMap, isTemplatePath, listTemplatesInTree, type TemplatePathNode } from "./template/manager";
+import { buildTemplateMap, isTemplatePath, listTemplatesInTree } from "./template/manager";
 import { VIEW_TYPE, ZoteroLibraryView } from "./ui/ZoteroLibraryView";
 import { ZoteroLibrarySettingTab } from "./settings/SettingTab";
 import { OutputService, type OutputAction } from "./output/OutputService";
 import type { OutputRequest, OutputScope } from "./output/build";
 import type { Derived } from "./ui/state";
 import type { ZoteroItem } from "./model/types";
-import { renderReport, runVerification, type FsLike, type SessionInfo } from "./verify/verify";
+import { renderReport, runVerification, type SessionInfo } from "./verify/verify";
 import { createNodeFs } from "./verify/nodeFs";
 import { writeClipboardText } from "./clipboard";
+import { getElectronShell } from "./electronShell";
 
 const REPORT_NOTE = "Zotero Library — informe de verificación.md";
 
@@ -177,20 +178,10 @@ export default class ZoteroLibraryPlugin extends Plugin {
 
   /** Lo que el menú de un ítem necesita del sistema: enlaces de Zotero y archivos locales (Electron, solo escritorio). */
   private openDeps(): OpenDeps {
-    const shell = (): { openPath(p: string): Promise<string>; showItemInFolder(p: string): void } | null => {
+    const shell = () => {
       try {
-        const requireElectron = (window as unknown as { require?: (moduleName: string) => unknown }).require;
-        const electron = requireElectron?.("electron");
-        if (!electron || typeof electron !== "object") return null;
-        const candidate = Reflect.get(electron, "shell");
-        if (!candidate || typeof candidate !== "object") return null;
-        const openPath = Reflect.get(candidate, "openPath");
-        const showItemInFolder = Reflect.get(candidate, "showItemInFolder");
-        if (typeof openPath !== "function" || typeof showItemInFolder !== "function") return null;
-        return {
-          openPath: (path) => Reflect.apply(openPath, candidate, [path]) as Promise<string>,
-          showItemInFolder: (path) => { Reflect.apply(showItemInFolder, candidate, [path]); },
-        };
+        const requireElectron: unknown = Reflect.get(window, "require");
+        return getElectronShell(requireElectron, window);
       } catch {
         return null;
       }
@@ -454,7 +445,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
     const folder = this.settings.templatesFolder;
     const root = folder ? this.app.vault.getAbstractFileByPath(folder) : this.app.vault.getRoot();
     if (!(root instanceof TFolder)) return [];
-    return listTemplatesInTree(root as TemplatePathNode, folder);
+    return listTemplatesInTree(root, folder);
   }
 
   /** Crea el motor con las plantillas actuales de la carpeta (para {% include %}). */
@@ -464,7 +455,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
   async createEngine(): Promise<{ engine: TemplateEngine; templates: Map<string, string> }> {
     const folder = this.settings.templatesFolder;
     const root = folder ? this.app.vault.getAbstractFileByPath(folder) : this.app.vault.getRoot();
-    const paths = root instanceof TFolder ? listTemplatesInTree(root as TemplatePathNode, folder) : [];
+    const paths = root instanceof TFolder ? listTemplatesInTree(root, folder) : [];
     const files = paths
       .map((path) => this.app.vault.getAbstractFileByPath(folder ? `${folder}/${path}` : path))
       .filter((file): file is TFile => file instanceof TFile && isTemplatePath(file.path));

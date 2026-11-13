@@ -59,6 +59,9 @@ export function highlightTerms(root: HTMLElement, terms: string[]): number {
     const text = node.data;
     const ranges = findRanges(text, terms);
     if (!ranges.length) continue;
+    // DocumentFragment has no Obsidian createEl equivalent; this fragment
+    // keeps the replacement atomic and avoids touching the rendered tree per range.
+    // eslint-disable-next-line obsidianmd/prefer-create-el
     const frag = doc.createDocumentFragment();
     let pos = 0;
     for (const [a, b] of ranges) {

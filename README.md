@@ -1,6 +1,6 @@
 # Zotero Library para Obsidian
 
-Plugin de escritorio para explorar una biblioteca de Zotero desde Obsidian, filtrar ítems y anotaciones, y generar notas o texto mediante plantillas Nunjucks. Versión actual del proyecto: **0.9.9**.
+Plugin de escritorio para explorar una biblioteca de Zotero desde Obsidian, filtrar ítems y anotaciones, y generar notas o texto mediante plantillas Nunjucks. Versión actual del proyecto: **0.9.10**.
 
 ## Funciones
 

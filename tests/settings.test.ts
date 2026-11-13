@@ -29,4 +29,34 @@ describe("ajustes persistidos", () => {
     expect(mergeStoredSettings({ lastSyncAt: Number.POSITIVE_INFINITY }).lastSyncAt).toBe(0);
     expect(mergeStoredSettings({ lastSyncAt: "123" }).lastSyncAt).toBe(0);
   });
+
+  it("valida cada campo del estado persistido y descarta valores anidados malformados", () => {
+    const merged = mergeStoredSettings({
+      viewState: {
+        collections: ["COLLECT1", 42],
+        searchMode: "execute",
+        combine: "or",
+        complexConditions: [
+          { field: "author", op: "contains", value: "Marx", negate: false },
+          { field: "title", op: "execute", value: "x", negate: false },
+          { field: "year", op: "between", value: "1800", value2: 7, negate: false },
+        ],
+        listSort: { key: "__proto__", dir: "desc" },
+        mode: "annotation",
+        outputTemplates: { full: "templates/full.md", link: 7, unexpected: "ignored" },
+        unexpected: "ignored",
+      },
+    });
+
+    expect(merged.viewState).toMatchObject({
+      combine: "or",
+      complexConditions: [{ field: "author", op: "contains", value: "Marx", negate: false }],
+      mode: "annotation",
+      outputTemplates: { full: "templates/full.md", meta: "", annotations: "", bibliography: "", link: "" },
+    });
+    expect(merged.viewState).not.toHaveProperty("collections");
+    expect(merged.viewState).not.toHaveProperty("searchMode");
+    expect(merged.viewState).not.toHaveProperty("listSort");
+    expect(merged.viewState).not.toHaveProperty("unexpected");
+  });
 });

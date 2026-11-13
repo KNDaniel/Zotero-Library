@@ -42,6 +42,35 @@ describe("la vista respeta el contrato de Obsidian", () => {
     expect(props.filter((k) => RESERVED_BY_OBSIDIAN.includes(k))).toEqual([]);
   });
 
+  it("activa el wrapper correcto para los paneles en el diseño móvil", async () => {
+    const { ZoteroLibraryView } = await import("../src/ui/ZoteroLibraryView");
+    const view = new ZoteroLibraryView({ app: {} } as never, { settings: { viewState: {} } } as never);
+    const left = { toggleClass: vi.fn() };
+    const right = { toggleClass: vi.fn() };
+    const itemsEl = { parentElement: left, toggleClass: vi.fn() };
+    const tagsEl = { parentElement: left, toggleClass: vi.fn() };
+    const resultsEl = { parentElement: right, toggleClass: vi.fn() };
+    Reflect.set(view, "items", { el: itemsEl, refreshViewport: vi.fn() });
+    Reflect.set(view, "tags", { el: tagsEl, refreshViewport: vi.fn() });
+    Reflect.set(view, "results", { el: resultsEl, refreshViewport: vi.fn() });
+    const activate = Reflect.get(ZoteroLibraryView.prototype, "activatePanel") as (this: typeof view, panel: "items" | "tags" | "results") => void;
+
+    activate.call(view, "tags");
+
+    expect(tagsEl.toggleClass).toHaveBeenCalledWith("is-active-panel", true);
+    expect(itemsEl.toggleClass).toHaveBeenCalledWith("is-active-panel", false);
+    expect(left.toggleClass).toHaveBeenCalledWith("is-active-panel", true);
+    expect(right.toggleClass).toHaveBeenCalledWith("is-active-panel", false);
+  });
+
+  it("no usa display: contents para el layout responsive", async () => {
+    const { readFileSync } = await import("node:fs");
+    const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+    expect(css).not.toMatch(/display\s*:\s*contents/i);
+    expect(css).toContain(".zl-layout > .zl-left:not(.is-active-panel)");
+    expect(css).toContain(".zl-layout > .zl-right:not(.is-active-panel)");
+  });
+
   it("el plugin tampoco define métodos que Obsidian usa para el ciclo de vida", async () => {
     // main.ts importa muchas cosas de obsidian; basta revisar los nombres declarados en el fuente.
     const { readFileSync } = await import("node:fs");
