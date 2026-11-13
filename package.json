@@ -1,7 +1,7 @@
 {
   "name": "zotero-library",
   "packageManager": "pnpm@12.18.0",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "license": "MIT",
   "description": "Explora ítems, etiquetas y anotaciones de Zotero desde Obsidian y renderízalos o imprímelos con plantillas Nunjucks.",
   "repository": {

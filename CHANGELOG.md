@@ -1,5 +1,10 @@
 # Cambios
 
+## 0.9.12 — artefactos de release consistentes
+
+- Fija finales de línea LF para CSS para que las copias locales y las de CI tengan el mismo hash y coincidan con su atestación de procedencia.
+- Conserva la atestación explícita por archivo para `main.js`, `manifest.json` y `styles.css`.
+
 ## 0.9.11 — correcciones del análisis de publicación
 
 - Sustituye la supresión de lint para `createDocumentFragment` por inserción de resaltados usando el helper DOM `createEl` de Obsidian.
