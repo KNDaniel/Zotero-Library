@@ -168,6 +168,18 @@ describe("motor de plantillas", () => {
     expect(() => e.render("{% if %}", {}, "mala")).toThrow(TemplateError);
     expect(() => e.render('{% include "noexiste" %}', {}, "otra")).toThrow(/noexiste/);
   });
+
+  it("copia el contexto y elimina propiedades de prototipo de datos externos", () => {
+    const payload = Object.create(null) as Record<string, unknown>;
+    payload.title = "Metadato";
+    Object.defineProperty(payload, "constructor", { value: "no debe exponerse", enumerable: true });
+    payload.nested = { prototype: "no debe exponerse", value: "seguro" };
+    const out = e.render("{{ payload.title }}|{{ payload.constructor | default('bloqueado') }}|{{ payload.nested.prototype | default('bloqueado') }}|{{ values | join(',') }}", {
+      payload,
+      values: ["uno", "dos"],
+    });
+    expect(out).toBe("Metadato|bloqueado|bloqueado|uno,dos");
+  });
 });
 
 describe("gestor de plantillas", () => {

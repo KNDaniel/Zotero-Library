@@ -10,7 +10,7 @@ vi.mock("obsidian", () => ({
   },
 }));
 
-import { obsidianHttp } from "../src/obsidianHttp";
+import { obsidianHttp, safeRequestLabel } from "../src/obsidianHttp";
 
 function response(over: { json?: () => unknown; text?: () => string; size?: number } = {}) {
   const reads = { text: 0, json: 0 };
@@ -93,5 +93,15 @@ describe("obsidianHttp", () => {
       (e: unknown) => e as Error,
     );
     expect(err?.message).toContain("ERR_EMPTY_RESPONSE");
+  });
+});
+
+describe("etiquetas HTTP para el registro", () => {
+  it("omite query strings y redacta claves y biblioteca", () => {
+    const label = safeRequestLabel("http://127.0.0.1:23119/api/groups/123456/items/ABCDEFGH?itemKey=ABCDEFGH&token=secret");
+    expect(label).toBe("/api/[library]/items/[key]");
+    expect(label).not.toContain("secret");
+    expect(label).not.toContain("ABCDEFGH");
+    expect(safeRequestLabel("no es URL")).toBe("[URL inválida]");
   });
 });

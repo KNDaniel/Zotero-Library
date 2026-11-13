@@ -6,6 +6,8 @@ import type { ViewState } from "./ui/state";
 export interface ZoteroLibrarySettings {
   /** URL base del servidor local de Zotero (127.0.0.1 evita problemas de IPv6 con «localhost») */
   baseUrl: string;
+  /** Requiere consentimiento explícito para enviar la biblioteca a un servidor remoto HTTPS. */
+  allowRemoteHost: boolean;
   /** users/0 = biblioteca personal; groups/<id> = biblioteca de grupo */
   libraryPath: string;
   /** Carpeta de datos de Zotero (contiene storage/ y cache/) */
@@ -61,6 +63,7 @@ export interface ZoteroLibrarySettings {
 export function defaultSettings(): ZoteroLibrarySettings {
   return {
     baseUrl: "http://127.0.0.1:23119",
+    allowRemoteHost: false,
     libraryPath: "users/0",
     zoteroDataDir: `${homedir()}/Zotero`.replace(/\\/g, "/"),
     useDiskCache: true,

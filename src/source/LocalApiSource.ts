@@ -2,6 +2,7 @@ import type { ZoteroApiObject } from "../model/types";
 import { ZoteroConnectionError, type HttpClient, type HttpResponse } from "./http";
 import { bibHtmlToEntries } from "../output/bibliography";
 import type { AnnotationSource, Changes, PingResult, ProgressCallback, RawLibrary, ZoteroSource } from "./ZoteroSource";
+import { validateLibraryPath, validateZoteroBaseUrl } from "./endpoint";
 
 export interface LocalApiOptions {
   /** p. ej. http://localhost:23119 */
@@ -11,6 +12,7 @@ export interface LocalApiOptions {
   http: HttpClient;
   pageSize?: number;
   concurrency?: number;
+  allowRemoteHost?: boolean;
 }
 
 type Query = Record<string, string | number | undefined>;
@@ -49,8 +51,8 @@ export class LocalApiSource implements ZoteroSource {
   requests = 0;
 
   constructor(opts: LocalApiOptions) {
-    this.apiRoot = `${opts.baseUrl.replace(/\/+$/, "")}/api`;
-    this.libraryRoot = `${this.apiRoot}/${trimSlashes(opts.libraryPath)}`;
+    this.apiRoot = `${validateZoteroBaseUrl(opts.baseUrl, opts.allowRemoteHost)}/api`;
+    this.libraryRoot = `${this.apiRoot}/${validateLibraryPath(opts.libraryPath)}`;
     this.http = opts.http;
     this.pageSize = Math.min(Math.max(opts.pageSize ?? 100, 1), 100);
     this.concurrency = Math.max(opts.concurrency ?? 4, 1);

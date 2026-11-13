@@ -1,5 +1,6 @@
 import type { HttpClient } from "./http";
 import { ZOTERO_HEADERS } from "./LocalApiSource";
+import { validateLibraryPath, validateZoteroBaseUrl } from "./endpoint";
 
 export interface Transport {
   name: string;
@@ -55,16 +56,24 @@ export async function diagnoseConnection(
   transports: Transport[],
   baseUrl: string,
   libraryPath: string,
+  allowRemoteHost = false,
 ): Promise<Diagnosis> {
   let url: URL;
   try {
-    url = new URL(baseUrl);
-  } catch {
-    return { probes: [], verdict: `La URL «${baseUrl}» no es válida. Ejemplo: http://127.0.0.1:23119` };
+    url = new URL(validateZoteroBaseUrl(baseUrl, allowRemoteHost));
+  } catch (error) {
+    return { probes: [], verdict: (error as Error).message };
   }
-  const port = url.port || "23119";
-  const hosts = [...new Set([url.hostname, "127.0.0.1", "localhost"])];
-  const lib = libraryPath.replace(/^\/+|\/+$/g, "");
+  let lib: string;
+  try {
+    lib = validateLibraryPath(libraryPath);
+  } catch (error) {
+    return { probes: [], verdict: (error as Error).message };
+  }
+  const port = url.port || (url.protocol === "https:" ? "443" : "23119");
+  const host = url.hostname.replace(/^\[|\]$/g, "");
+  const loopback = host === "localhost" || host === "::1" || /^127(?:\.\d{1,3}){3}$/.test(host);
+  const hosts = loopback ? [...new Set([host, "127.0.0.1", "localhost"])] : [host];
   const probes: Probe[] = [];
 
   for (const t of transports) {

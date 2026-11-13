@@ -1,6 +1,6 @@
 import { createWatchdog } from "./watchdog";
 import { promises as fsp } from "fs";
-import { Menu, Notice, Plugin, TFile, moment, normalizePath } from "obsidian";
+import { Menu, Notice, Platform, Plugin, TFile, moment, normalizePath } from "obsidian";
 import { attachmentChoices, buildItemMenu, type MenuEntry, type OpenDeps } from "./services/itemActions";
 import { trace } from "./log";
 import { mergeChanges, packCache, unpackCache } from "./index/cache";
@@ -32,6 +32,7 @@ import type { Derived } from "./ui/state";
 import type { ZoteroItem } from "./model/types";
 import { renderReport, runVerification, type FsLike, type SessionInfo } from "./verify/verify";
 import { createNodeFs } from "./verify/nodeFs";
+import { writeClipboardText } from "./clipboard";
 
 const REPORT_NOTE = "Zotero Library — informe de verificación.md";
 
@@ -55,7 +56,8 @@ export default class ZoteroLibraryPlugin extends Plugin {
   async onload(): Promise<void> {
     this.settings = Object.assign(defaultSettings(), await this.loadData());
     const adapter = this.app.vault.adapter as { getBasePath?: () => string } | undefined;
-    trace.init(typeof adapter?.getBasePath === "function" ? adapter.getBasePath() : null, this.manifest.dir, this.manifest.version);
+    const platform: NodeJS.Platform = Platform.isWin ? "win32" : Platform.isMacOS ? "darwin" : Platform.isLinux ? "linux" : process.platform;
+    trace.init(typeof adapter?.getBasePath === "function" ? adapter.getBasePath() : null, this.manifest.dir, this.manifest.version, platform);
     trace.log("onload: ajustes cargados");
     this.installWatchdog();
     this.addSettingTab(new ZoteroLibrarySettingTab(this.app, this));
@@ -251,13 +253,14 @@ export default class ZoteroLibraryPlugin extends Plugin {
   createSource(): LocalApiSource {
     return new LocalApiSource({
       baseUrl: this.settings.baseUrl,
+      allowRemoteHost: this.settings.allowRemoteHost,
       libraryPath: this.settings.libraryPath,
       http: withFallback(obsidianHttp, nodeHttp),
     });
   }
 
   async diagnose(): Promise<void> {
-    const d = await diagnoseConnection(TRANSPORTS, this.settings.baseUrl, this.settings.libraryPath);
+    const d = await diagnoseConnection(TRANSPORTS, this.settings.baseUrl, this.settings.libraryPath, this.settings.allowRemoteHost);
     new ReportModal(this.app, renderDiagnosis(d), null, "Diagnóstico de conexión").open();
   }
 
@@ -330,7 +333,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
   // ----- Copia en disco y sincronización incremental -----
 
   private cachePath(): string {
-    return normalizePath(`${this.manifest.dir ?? ".obsidian/plugins/zotero-library"}/library-cache.json.gz`);
+    return normalizePath(`${this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`}/library-cache.json.gz`);
   }
 
   /** Abre la biblioteca desde la copia en disco (casi instantáneo). */
@@ -553,7 +556,7 @@ export default class ZoteroLibraryPlugin extends Plugin {
       }
       const shown = text.replace(/\s+/g, " ").trim();
       const label = `${what === "valor" ? "Valor copiado" : "Variable copiada"}: ${shown.length > 80 ? `${shown.slice(0, 79)}…` : shown}`;
-      void navigator.clipboard.writeText(text).then(
+      void writeClipboardText(text).then(
         () => new Notice(label, 2500),
         () => new Notice("No se pudo copiar al portapapeles.", 4000),
       );
@@ -627,8 +630,16 @@ export default class ZoteroLibraryPlugin extends Plugin {
 
   private async saveReportNote(markdown: string): Promise<void> {
     const existing = this.app.vault.getAbstractFileByPath(REPORT_NOTE);
-    if (existing instanceof TFile) await this.app.vault.modify(existing, markdown);
-    else await this.app.vault.create(REPORT_NOTE, markdown);
-    new Notice(`Informe guardado en «${REPORT_NOTE}»`);
+    const write = async (): Promise<void> => {
+      if (existing instanceof TFile) await this.app.vault.modify(existing, markdown);
+      else await this.app.vault.create(REPORT_NOTE, markdown);
+      new Notice(`Informe guardado en «${REPORT_NOTE}»`);
+    };
+    if (existing && !(existing instanceof TFile)) {
+      new Notice(`«${REPORT_NOTE}» existe y no es una nota; cámbiale el nombre o muévela.`, 8000);
+      return;
+    }
+    if (existing instanceof TFile) new ConfirmReplaceModal(this.app, REPORT_NOTE, () => void write()).open();
+    else await write();
   }
 }

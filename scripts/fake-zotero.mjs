@@ -44,6 +44,7 @@ export function makeObsidian(extra = {}) {
       async close() { await this.onClose(); this.containerEl.remove(); }
       registerDomEvent(el, t, f) { el.addEventListener(t, f); }
     }, MarkdownRenderer: { render: async () => {} }, normalizePath: (p) => p,
+    Platform: { isWin: true, isMacOS: false, isLinux: false },
     // Menú contextual simulado: guarda sus entradas para que las pruebas de humo las inspeccionen
     Menu: class {
       constructor() { this.items = []; this.shown = false; (globalThis.__menus ??= []).push(this); }

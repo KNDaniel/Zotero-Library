@@ -10,6 +10,7 @@ import { buildOutput, type BuiltOutput, type OutputRequest, type OutputScope } f
 import { noteBaseName, uniqueNotePath } from "./noteName";
 import { copyImages, describeImages, type ImageIO } from "./images";
 import type { LocalApiSource } from "../source/LocalApiSource";
+import { writeClipboardText } from "../clipboard";
 
 export type OutputAction = "copy" | "insert" | "note";
 
@@ -65,7 +66,7 @@ export class OutputService {
 
     let done: string;
     if (action === "copy") {
-      await navigator.clipboard.writeText(built.text);
+      await writeClipboardText(built.text);
       done = "Copiado";
     } else if (action === "insert") {
       done = `Insertado en «${await this.insertIntoActiveNote(built.text)}»`;

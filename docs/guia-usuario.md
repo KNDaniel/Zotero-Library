@@ -1,13 +1,13 @@
 # Guía de usuario
 
-Esta guía corresponde a Zotero Library 0.9.6. El plugin es de escritorio y lee la biblioteca mediante la API local de Zotero.
+Esta guía corresponde a Zotero Library 0.9.7. El plugin es de escritorio y lee la biblioteca mediante la API local de Zotero.
 
 ## Requisitos y conexión
 
 1. Instala/activa el plugin copiando `main.js`, `manifest.json` y `styles.css` a `.obsidian/plugins/zotero-library/` y activándolo en Complementos de la comunidad.
 2. Abre Zotero y activa **Ajustes → Avanzado → Permitir que otras aplicaciones de este equipo se comuniquen con Zotero**.
 3. En **Ajustes → Zotero Library**, revisa:
-   - **URL del servidor local**: por defecto `http://127.0.0.1:23119`.
+   - **URL del servidor**: por defecto `http://127.0.0.1:23119`. Loopback es el único destino permitido de forma predeterminada. Para otro host, activa **Permitir servidor remoto**; los hosts remotos deben usar HTTPS y recibirán las solicitudes de lectura y las claves consultadas.
    - **Biblioteca**: `users/0` para la personal o `groups/<id>` para un grupo.
    - **Carpeta de datos de Zotero**: la que contiene `storage/` y `cache/`; se usa para localizar adjuntos e imágenes.
 4. Pulsa **Probar conexión** o ejecuta **Probar conexión con Zotero** desde la paleta.
@@ -73,4 +73,4 @@ La carpeta de datos de Zotero se encuentra fuera del vault. El plugin consulta r
 - **Reiniciar la vista de Zotero Library (si se queda en negro)**: vuelve a crear la pestaña.
 - **Comparar plantilla con una nota existente**: compara el resultado de una plantilla con una nota del vault.
 
-Para informar un problema, adjunta la versión de Obsidian/Zotero, la acción realizada y el fragmento pertinente del registro. El registro puede incluir rutas locales, mensajes y pilas de error, claves de anotación al faltar imágenes y la ruta de biblioteca consultada; revísalo y redacta los datos antes de compartirlo.
+Para informar un problema, adjunta la versión de Obsidian/Zotero, la acción realizada y el fragmento pertinente del registro. El registro evita escribir rutas locales, query strings y pilas de error, pero puede incluir mensajes de error y claves de anotación al faltar imágenes; revísalo antes de compartirlo.

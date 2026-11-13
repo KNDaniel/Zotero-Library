@@ -4,7 +4,7 @@ import type { ZoteroApiObject } from "../src/model/types";
 
 const dir = path.join(__dirname, "fixtures");
 export const golden = JSON.parse(fs.readFileSync(path.join(dir, "golden.json"), "utf8"));
-export const template = fs.readFileSync(path.join(dir, "template-import-anotaciones.md"), "utf8");
+export const template = fs.readFileSync(path.join(dir, "template-import-anotaciones.md"), "utf8").replace(/\r\n/g, "\n");
 export const note = fs.readFileSync(path.join(dir, "golden-note.md"), "utf8").replace(/\r\n/g, "\n");
 export const ITEM_KEY = "ITEM0001";
 
