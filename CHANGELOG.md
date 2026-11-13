@@ -1,5 +1,10 @@
 # Cambios
 
+## 0.9.11 — correcciones del análisis de publicación
+
+- Sustituye la supresión de lint para `createDocumentFragment` por inserción de resaltados usando el helper DOM `createEl` de Obsidian.
+- Atesta cada archivo de distribución con una ruta explícita para que `main.js`, `manifest.json` y `styles.css` tengan procedencia verificable.
+
 ## 0.9.10 — remediación de advertencias de revisión
 
 - Endurece los límites de lectura de archivos externos de Zotero y valida rutas canónicas antes de consultar o copiar imágenes.
